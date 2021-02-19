@@ -6,7 +6,7 @@ output: github_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = F, message = F, cache = T)
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F, cache = T)<
 options(Encoding="UTF-8")
 extrafont::loadfonts(device="win")
 
@@ -20,7 +20,7 @@ library(eurostat)
 
 ```{r}
 plot_NUTS2 <- function(df, viridis_c = T, ...) {
-p <- df %>% 
+p <- df %>%
   {merge(eurostat::get_eurostat_geospatial(nuts_level = 2), .)} %>% 
   ggplot(aes(fill = values)) +
   geom_sf(color = "black") +
@@ -42,7 +42,6 @@ p
 }
 ```
 
-
 ```{r}
 dat <- search_eurostat("NUTS 2") %>% 
   select(1, 2)
@@ -58,10 +57,12 @@ dat %>%
       mutate(code = code, title = title)
   })
 ```
+
 ```{r}
 search_eurostat("NUTS 2") %>% 
-  filter(str_detect(title, "Fert"))
+  filter(str_detect(title, "expectancy"))
 ```
+
 ```{r}
 fertility_byage <- get_eurostat("demo_r_frate2", time_format = "num")
 ```
@@ -96,6 +97,12 @@ fr_age_comps <- fr_agegroups_wide %>%
   na.omit() %>% 
   {princomp(scale(.))}
 
+comp_vars <- fr_age_comps %>% 
+  summary() %>% 
+  {.$sdev^2/sum(.$sdev^2)} %>% 
+  scales::percent(accuracy = .01) %>% 
+  {str_c("# ", 1:length(.), " (", ., ")")}
+
 fr_age_comps %>% 
   .$loadings %>% 
   unclass() %>% 
@@ -103,8 +110,11 @@ fr_age_comps %>%
   rownames_to_column() %>% 
   pivot_longer(-1) %>% 
   mutate(
-    name = str_remove(name, 'Comp.'),
-    name = factor(str_c('# ', name), levels = str_c('# ', 1:n_distinct(name)))
+    name = as.numeric(str_remove(name, 'Comp.')),
+  ) %>% 
+  arrange(name) %>% 
+  mutate(
+    name = comp_vars[name]
   ) %>% 
   ggplot +
   aes(rowname, value, fill = value < 0) +
@@ -114,8 +124,12 @@ fr_age_comps %>%
   scale_fill_viridis_d(guide = F, option = "magma", begin = .4, end= .7, direction = -1) +
   scale_y_continuous(labels = scales::percent) +
   facet_wrap(~name, ncol = 3) +
-  labs(x = NULL, y = NULL, title = 'Főkomponensek')
+  labs(x = NULL, y = NULL, title = 'Főkomponensek és magyarázott variancia hányada')
 ```
+```{r}
+
+```
+
 
 ```{r}
 fr_age_comps %>% 

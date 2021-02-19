@@ -3,7 +3,7 @@ library(glue)
 library(colourpicker)
 library(tidyverse)
 
-
+setwd("C:/school/szem_8/TDK-fertility/fertilityEU/eurostat_datasets")
 dat <- rbind(read_csv("demo_r_frate2_1_Data.csv", locale = readr::locale(encoding = "UTF-8"))%>% 
                transmute(time = TIME, geo = GEO, variable = "Fertility", value = Value),
              read_csv("edat_lfse_16_1_Data.csv", locale = readr::locale(encoding = "UTF-8")) %>% 
