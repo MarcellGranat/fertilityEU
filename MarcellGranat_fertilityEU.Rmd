@@ -22,7 +22,7 @@ header-includes:
 - \pretitle{\begin{center}\LARGE\includegraphics[width=5cm]{logo.png}\\[\bigskipamount]}
 - \posttitle{\end{center}}
 editor_options: 
-  chunk_output_type: inline
+  chunk_output_type: console
 ---
 
 \pagebreak
@@ -34,7 +34,7 @@ Here is the abstract.
 \pagebreak
 
 ```{r setup, include=FALSE, warning=F}
-knitr::opts_chunk$set(echo = F, comment = "", warning = F, message = F, cache = F, dev = "cairo_pdf", error = T)
+knitr::opts_chunk$set(echo = F, comment = "", warning = F, message = F, cache = T, dev = "cairo_pdf", error = T)
 ```
 
 ```{r packages}
@@ -60,7 +60,8 @@ update_geom_defaults("line",
 update_geom_defaults("smooth", list(color = "red4", size = 1.4))
 
 update_geom_defaults("density", 
-                     list(color = "midnightblue", fill =  "midnightblue", alpha = .3, size = 1.4))
+                     list(color = "midnightblue", fill =  "midnightblue", alpha = .3, 
+                          size = 1.4))
 
 extrafont::loadfonts(device="win")
 
@@ -81,13 +82,11 @@ Ay alábbi rövid kézirat a brit **Family Expenditure Survey** adataiból kinye
 ```{r fig.cap = "Seemingly negative effect of gross domestic product on fertility rates based on nation level observations (2017)"}
 # https://data.worldbank.org/indicator/SP.DYN.TFRT.IN
 
-WB_fertility <- read_csv("WB_fertility.csv",
-                         skip = 4)
+WB_fertility <- read_csv("WB_fertility.csv", skip = 4)
 
 # https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.KD
 
-WB_GDP <- read_csv("WB_GDP.csv",
-                   skip = 4)
+WB_GDP <- read_csv("WB_GDP.csv", skip = 4)
 
 merge(WB_fertility %>% 
         select('Country Name', '2017') %>% 
@@ -131,20 +130,30 @@ plot_NUTS2 <- function(df, viridis_c = T, ..., all.x = F) {
 
 ```
 
-
 # Data
+
+## Total fertility rates
 
 ```{r}
 # Data import ---------------------------------------------------------------------------
 
-# Eurostat database =====================================================================
+# Fertility: source: Eurostat database ==================================================
 
 f_data <- get_eurostat("demo_r_find2", time_format = "num") %>% 
   select(geo, time, var = indic_de, values)
 
+```
+
+```{r fig.cap="Total fertility rates through Europe in 2017"}
+### Map of TFR ##########################################################################
+
+f_data %>% 
+  filter(var == "TOTFERRT" & str_length(geo) == 4 & time == 2017) %>% 
+  plot_NUTS2()
 
 ```
 
+## Human development
 
 ```{r}
 # Data from Global Data Labor ===========================================================
@@ -211,8 +220,6 @@ HDI_UNDP <- read_csv("Human Development Index (HDI).csv",
 
 ```
 
-## Human development
-
 ```{r}
 merge(GDL_nat %>% rename(GDL = values),
       HDI_UNDP %>% rename(UNDP = values)) %>% 
@@ -236,6 +243,24 @@ merge(GDL_nat %>% rename(GDL = values),
 
 ```
 
+```{r fig.cap = "HDI and its components based on the dataset from Global Data Lab (2017)"}
+GDL_subnat %>% 
+  filter(time == 2017) %>% 
+  select(-time) %>% 
+  pivot_longer(-1, names_to = "var", values_to = "values") %>% 
+  filter(!is.na(var)) %>% 
+  mutate(
+    var = str_to_title(var),
+    var = str_replace(var, "Hdi", "HDI"),
+    var = factor(var, 
+                 levels = c("HDI", "Income", "Education", "Health"), 
+                 ordered = T)
+  ) %>% 
+  plot_NUTS2() + facet_wrap(~ var, ncol = 2) +
+  labs(caption = "Source: https://globaldatalab.org")
+
+```
+
 ### A decent standard of living
 
 ```{r}
@@ -254,6 +279,7 @@ GDP_index <- get_eurostat("nama_10r_2gdp", time_format = "num") %>%
              (log(75000) - log(100))
     )
   }
+
 ```
 
 
@@ -262,7 +288,8 @@ merge(GDL_subnat, GDP_index) %>%
   {
     c(
       scales::percent(cor(x = .$income, y = .$GDPindex)^2, accuracy = .01), 
-      scales::percent(cor(x = .$income, y = .$GDPindex, method = "spearman")^2, accuracy = .01),
+      scales::percent(cor(x = .$income, y = .$GDPindex, method = "spearman")^2,
+                      accuracy = .01),
       as.character(format(mean(abs(.$income - .$GDPindex)), digits = 1, nsmall = 4)),
       scales::percent(mean(abs(.$income - .$GDPindex)/.$GDPindex), accuracy = .01)
     )
@@ -276,6 +303,7 @@ merge(GDL_subnat, GDP_index) %>%
     caption = "Indicators of similiarity between the income component of the 
     Human Development Indices provided by GDL and the estimation based on regional GDP"
   )
+
 ```
 
 ```{r fig.cap = "Calculated income index based on regional GDP data"}
@@ -283,6 +311,7 @@ GDP_index %>%
   filter(time == 2017) %>% 
   select(geo, values = GDPindex) %>% 
   plot_NUTS2
+
 ```
 
 ```{r}
@@ -292,6 +321,7 @@ health_index <- get_eurostat("demo_r_mlifexp", time_format = "num") %>%
   mutate(
     health_index = (le - 20) / (85 - 20)
   )
+
 ```
 
 ### Long and healthy life
@@ -301,7 +331,8 @@ merge(GDL_subnat, health_index) %>%
   {
     c(
       scales::percent(cor(x = .$health, y = .$health_index)^2, accuracy = .01), 
-      scales::percent(cor(x = .$health, y = .$health_index, method = "spearman")^2, accuracy = .01),
+      scales::percent(cor(x = .$health, y = .$health_index, method = "spearman")^2,
+                      accuracy = .01),
       as.character(format(mean(abs(.$health - .$health_index)), digits = 1, nsmall = 4)),
       scales::percent(mean(abs(.$health - .$health_index)/.$health_index), accuracy = .01)
     )
@@ -313,8 +344,10 @@ merge(GDL_subnat, health_index) %>%
   )} %>% 
   kable(
     caption = "Indicators of similiarity between the health component of the 
-    Human Development Indices provided by GDL and the estimation based on regional life expectency"
+    Human Development Indices provided by GDL and the estimation based on regional life
+    expectency"
   )
+
 ```
 
 ### Knowledge
@@ -339,6 +372,7 @@ edu_wide <- get_eurostat("edat_lfse_04", time_format = "num") %>%
     names(x) <- names(.)
     x
   }
+
 ```
 
 ```{r fig.cap='PCAs and the explained variance'}
@@ -382,6 +416,7 @@ edu_comps %>%
   facet_wrap(~name, ncol = 3) +
   labs(x = NULL, y = NULL, caption = 
          "The corresponding proportion of the explained variance are in the brackets.")
+
 ```
 
 
@@ -403,9 +438,11 @@ edu_comps %>% .$scores %>%
   rename_all(function(x) str_replace(x, "p.", "p ")) %>% 
   select(Indicator, 1:9) %>% 
   kable(
-    caption = "Indicators of similiarity between the knowledge component of Human Development Indices 
-    provided by UNDP and the calculated principal components using educational attainment level"
+    caption = "Indicators of similiarity between the knowledge component of Human
+    Development Indices provided by UNDP and the calculated principal components using
+    educational attainment level"
   )
+
 ```
 
 ```{r}
@@ -420,6 +457,7 @@ edu_index <- edu_comps %>%
     edu_index = edu_index + abs(min(edu_index)),
     edu_index = edu_index/max(edu_index)
   ) 
+
 ```
 
 ```{r}
@@ -428,7 +466,10 @@ dat <- f_data %>%
   merge(edu_index, all = T) %>% 
   merge(health_index, all = T) %>% 
   merge(GDP_index, all = T) 
+
 ```
+
+## Family benefits
 
 ```{r}
 FAM_df <- get_eurostat("spr_exp_sum", time_format = "num") %>% 
@@ -437,6 +478,8 @@ FAM_df <- get_eurostat("spr_exp_sum", time_format = "num") %>%
   select(-(spdeps:unit)) 
 
 ```
+
+## Youth unemployment
 
 ```{r}
 yth_empl_byage <- get_eurostat("yth_empl_110", time_format = "num") %>% 
@@ -460,23 +503,39 @@ dat <- dat %>%
 
 ```
 
+```{r}
+f.clean_names <- function(v, Tosparse = F) {
+  v <- str_replace_all(v, "GDPindex", "Income index") %>% 
+    str_replace_all("health_index", "Health index") %>% 
+    str_replace_all("edu_index", "Education index") %>% 
+    str_replace_all("TOTFERRT", "TFR") %>% 
+    str_replace_all("GDPindex", "Income index") %>% 
+    str_replace_all("FAM", "Family benefit") %>% 
+    str_replace_all("uY15", "UR (15-19 y)") %>% 
+    str_replace_all("uY20", "UR (20-24 y)") %>% 
+    str_replace_all("uY25", "UR (25-29 y)")
+  if(Tosparse) v <- str_replace_all(v, " ", "~")
+  v
+}
+```
+
 # Explore data
 
-```{r}
+```{r fig.cap = "Pairwise correlation among TFR and calculation human development indices"}
+
+# Explore the data ----------------------------------------------------------------------
+
+# Pairwise correlations =================================================================
+
 dat %>% 
   filter(str_length(geo) == 4) %>% 
   select(TOTFERRT, GDPindex, edu_index, health_index) %>% 
-  rename(
-    'TFR'= 'TOTFERRT',
-    'Income index' = 'GDPindex',
-    'Health index' = 'health_index',
-    'Education index' = 'edu_index'
-  ) %>% 
+  {set_names(., f.clean_names(names(.)))} %>% 
   GGally::ggpairs()
 
 ```
 
-```{r fig.height=6}
+```{r fig.height=6, fig.cap = "Pairwise correlation among TFR and youth unemployment rates"}
 dat %>% 
   filter(str_length(geo) == 4) %>% 
   select(TOTFERRT, uY15, uY20, uY25) %>% 
@@ -484,10 +543,11 @@ dat %>%
             "Unemployment rate\n(20-24 years old)",
             "Unemployment rate\n(25-29 years old)") %>% 
   GGally::ggpairs()
+
 ```
 
 
-```{r}
+```{r fig.cap = "Correlation between TFR and family benefits"}
 dat %>% 
   filter(str_length(geo) == 2) %>% 
   ggplot(aes(FAM, TOTFERRT)) + geom_point() +
@@ -499,17 +559,15 @@ dat %>%
 
 ```
 
-```{r fig.cap = "Regression tree explaining the TFR (cp = 0.02)"}
+```{r fig.cap = "Regression tree explaining the TFR using only the calculated HD indices (cp = 0.01)"}
+# Regression trees ======================================================================
+
 m_part <- dat %>% 
   filter(str_length(geo) == 4) %>% 
-  select(TOTFERRT, GDPindex, edu_index, health_index) %>% 
-  rename(
-    'Income index' = 'GDPindex',
-    'Health index' = 'health_index',
-    'Education index' = 'edu_index'
-  ) %>%
+  select(TOTFERRT, GDPindex, edu_index, health_index, FAM) %>% 
+  {set_names(., f.clean_names(names(.)))} %>%
   na.omit() %>% 
-  rpart::rpart(formula = TOTFERRT ~ ., cp = .02)
+  rpart::rpart(formula = TFR ~ ., cp = .01)
 
 m_part %>% rattle::fancyRpartPlot(palettes = 'PuRd', sub = NULL)
 
@@ -517,128 +575,43 @@ m_part %>% rattle::fancyRpartPlot(palettes = 'PuRd', sub = NULL)
 
 ```{r eval=F}
 m_part %>% summary()
+
 ```
 
 
-```{r}
+```{r fig.cap = "Regression tree explaining the TFR using all the mentioned explanatory variables (cp = 0.01)"}
 m_part2 <- dat %>% 
   filter(str_length(geo) == 4) %>% 
-  select(TOTFERRT, GDPindex, edu_index, health_index, uY15, uY20, uY25) %>% 
-  rename(
-    'Income index' = 'GDPindex',
-    'Health index' = 'health_index',
-    'Education index' = 'edu_index',
-    'Unemployment rate at age 15-19' = 'uY15'
-  ) %>%
+  select(TOTFERRT, GDPindex, edu_index, health_index, uY15, uY20, uY25, FAM) %>% 
+  {set_names(., f.clean_names(names(.)))} %>%
   na.omit() %>% 
-  rpart::rpart(formula = TOTFERRT ~ ., cp = .02)
+  rpart::rpart(formula = TFR ~ ., cp = .01)
 
 m_part2 %>% rattle::fancyRpartPlot(palettes = 'PuRd', sub = NULL)
 
 ```
 
-```{r fig.cap = "HDI and its components based on the dataset from Global Data Lab (2017)"}
-GDL_subnat %>% 
-  filter(time == 2017) %>% 
-  select(-time) %>% 
-  pivot_longer(-1, names_to = "var", values_to = "values") %>% 
-  filter(!is.na(var)) %>% 
-  mutate(
-    var = str_to_title(var),
-    var = str_replace(var, "Hdi", "HDI"),
-    var = factor(var, 
-                 levels = c("HDI", "Income", "Education", "Health"), 
-                 ordered = T)
-  ) %>% 
-  plot_NUTS2() + facet_wrap(~ var, ncol = 2) +
-  labs(caption = "Source: https://globaldatalab.org")
-
-```
-
-```{r}
-fertility_byage <- get_eurostat("demo_r_frate2", time_format = "num") %>% 
-  filter(age != "TOTAL") %>% 
-  transmute(age = age, geo = geo, time, values)
-
-fr_agegroups_wide <- fertility_byage %>% 
-  mutate(age = str_remove(age, "Y"), # sorting into categories by 5 years
-         age = str_remove(age, "10-"),
-         age = str_remove(age, "_GE"),
-         age = as.numeric(age),
-         age_group = paste0((age %/% 5)*5, "-", (age %/% 5 + 1)*5 - 1),
-         age_group = ifelse(age_group == "50-54", "50-", age_group)
-  ) %>% 
-  group_by(age_group, time, geo) %>% 
-  summarise(values = sum(values)) %>% 
-  ungroup() %>%
-  pivot_wider(names_from = "age_group", values_from = "values") %>% 
-  select(-"10-14", -"50-") %>% 
-  na.omit() %>% 
-  arrange(time, geo)
-
-```
-
-```{r, fig.cap='PCAs and the explained variance'}
-fr_age_comps <- fr_agegroups_wide %>% 
-  select(-time, -geo) %>% 
-  na.omit() %>% 
-  {princomp(scale(.))}
-
-fr_age_comp_vars <- fr_age_comps %>% 
-  summary() %>% 
-  {.$sdev^2/sum(.$sdev^2)} %>% 
-  scales::percent(accuracy = .01) %>% 
-  {str_c("# ", 1:length(.), " (", ., ")")}
-
-fr_age_comps %>% 
-  .$loadings %>% 
-  unclass() %>% 
-  data.frame() %>% 
-  rownames_to_column() %>% 
-  pivot_longer(-1) %>% 
-  mutate(
-    name = as.numeric(str_remove(name, 'Comp.')),
-  ) %>% 
-  arrange(name) %>% 
-  mutate(
-    name = fr_age_comps %>% 
-      summary() %>% 
-      {.$sdev^2/sum(.$sdev^2)} %>% 
-      scales::percent(accuracy = .01) %>% 
-      {str_c("# ", 1:length(.), " (", ., ")")} %>% 
-      .[name]
-  ) %>% 
-  ggplot +
-  aes(rowname, value, fill = value < 0) +
-  geom_hline(yintercept = 0) +
-  geom_col(color = 'black') +
-  coord_flip() +
-  scale_fill_viridis_d(guide = F, option = "magma", begin = .4,
-                       end= .7, direction = -1) +
-  scale_y_continuous(labels = scales::percent) +
-  facet_wrap(~name, ncol = 3) +
-  labs(x = NULL, y = NULL, caption = 
-         "The corresponding proportion of the explained variance are in the brackets.")
-
-```
 
 
 # Model building
 
 ```{r}
+# Model building ------------------------------------------------------------------------
+
+# Transform the data for panel modeling =================================================
+
 dat_plm <- dat %>% 
   select(
     geo, time, TOTFERRT, edu_index, health_index, GDPindex, FAM, uY15, uY20, uY25
   ) %>% 
   filter(str_length(geo) == 4 & !is.na(TOTFERRT))
-```
 
-```{r}
 dat_plm <- dat_plm %>% 
   select(-TOTFERRT) %>% 
   mutate(time = time + 1) %>% 
   {
-    set_names(., ifelse(names(.) == 'geo' | names(.) == 'time', names(.), paste0(names(.), '_l')))
+    set_names(., ifelse(names(.) == 'geo' | names(.) == 'time', names(.), 
+                        paste0(names(.), '_l')))
   } %>% 
   merge(dat_plm, all.x = F, all.y = T)
 
@@ -647,7 +620,8 @@ dat_plm <- dat_plm %>%
   select(-TOTFERRT) %>% 
   mutate(time = time + 2) %>% 
   {
-    set_names(., ifelse(names(.) == 'geo' | names(.) == 'time', names(.), paste0(names(.), '_l_l')))
+    set_names(., ifelse(names(.) == 'geo' | names(.) == 'time', names(.), 
+                        paste0(names(.), '_l_l')))
   } %>% 
   merge(dat_plm, all.x = F, all.y = T)
 
@@ -655,20 +629,26 @@ dat_plm <- dat_plm %>%
   select(-TOTFERRT) %>% 
   mutate_at(-(1:2), function(x) x^2) %>% 
   {
-    set_names(., ifelse(names(.) == 'geo' | names(.) == 'time', names(.), paste0(names(.), '_2')))
+    set_names(., ifelse(names(.) == 'geo' | names(.) == 'time', names(.), 
+                        paste0(names(.), '_2')))
   } %>% 
   merge(dat_plm, all.x = F, all.y = T)
 
 ```
 
-
 ```{r}
+## Initial models =======================================================================
+
 library(plm)
 
 m_panels <- c(
-  "TOTFERRT ~  GDPindex_l_l + FAM_l_l + uY15_l_l + uY20_l_l + uY25_l_l + edu_index_l + health_index_l + GDPindex_l + FAM_l + uY15_l + uY20_l + uY25_l + edu_index + health_index + GDPindex + FAM + uY15 + uY20 + uY25",
-  "TOTFERRT ~ edu_index + health_index + GDPindex + FAM + uY15 + uY20 + uY25",
-  "TOTFERRT ~ edu_index") %>% 
+  'TOTFERRT ~ edu_index_l_l + health_index_l_l + GDPindex_l_l + FAM_l_l +
+  uY15_l_l + uY20_l_l + uY25_l_l + edu_index_l + health_index_l + GDPindex_l + FAM_l +
+  uY15_l + uY20_l + uY25_l + edu_index + health_index + GDPindex + FAM + uY15 + uY20 +
+  uY25',
+  'TOTFERRT ~ edu_index_l_l + health_index_l_l + GDPindex_l_l + FAM_l_l + edu_index_l +
+  health_index_l + GDPindex_l + FAM_l + edu_index + health_index + GDPindex + FAM'
+) %>% 
   lapply(function(formula) {
     pooling <- plm(eval(formula), data = dat_plm, model = "pooling")
     within <- plm(eval(formula), data = dat_plm, model = "within")
@@ -685,48 +665,104 @@ m_panels <- c(
   })
 ```
 
+```{r fig.cap="Panel models on the total fertility rates"}
+### Plot coefficients ###################################################################
 
-
-
-
-```{r out.extra='angle=90'}
 m_panels %>% 
   lapply(function(output) {
     output$model %>% broom::tidy(conf.int = T) %>% 
       rownames_to_column()
   }) %>% 
   reduce(rbind) %>% 
-  mutate(rowname = paste0("Model ", as.roman(cumsum(rowname == 1)), ".")) %>% 
+  mutate(
+    rowname = paste0("Model ", as.roman(cumsum(rowname == 1)), "."),
+    term = f.clean_names(term, Tosparse = T),
+    term = gsub("_2", "^2", term),
+    term = gsub("_l_l", '["t = -2"]', term),
+    term = gsub("_l", '["t = -1"]', term),
+  ) %>% 
   ggplot() +
   aes(estimate, term, color = p.value <= .05) +
   geom_vline(xintercept = 0, color = "gray4") +
   geom_point() +
   geom_pointrange(aes(xmin = conf.low, xmax = conf.high)) +
   facet_wrap(~rowname, nrow = 1) +
-  theme_grey() +
-  labs(x = "Estimated coefficient", y = "Term", color = "p-value <= 5%")
+  labs(x = "Estimated coefficient", y = "Term", color = "Corresponding p-value \u2264 5%") +
+  scale_color_viridis_d(option = "magma", begin = .2, end = .7) +
+  scale_y_discrete(labels=scales::parse_format()) +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "horizontal"
+  )
 
 ```
 
 ```{r}
+### Model descriptions ##################################################################
+
 m_panels %>% 
   lapply(function(output) {
-    output$tests
+    c(output$tests, nrow(augment(output$OLS)))
   }) %>% 
   reduce(rbind) %>% 
   t() %>% 
   data.frame() %>% 
-  mutate_all(function(x) scales::percent(x, accuracy = .01)) %>% 
+  mutate_all(function(x) c(scales::percent(x[1:3], accuracy = .01), 
+                           as.character(x[4]))) %>% 
   {set_names(., paste0("Model ", as.roman(1:ncol(.)), ".")) } %>% 
   mutate(
-    Indicator = c("pooltest", "phtest", "$Adjusted R^2$")
-  ) %>% # TODO ORDER
+    Indicator = c("Pooltest", "Phtest", "Adjusted $R^2$", "Observations")
+  ) %>% 
   select(Indicator, everything()) %>% 
-  knitr::kable(caption = "Models") # TODO NAME
+  knitr::kable(caption = "Models", align = c("l", "c", "c", "c"))
+
+```
+
+## Framework I: with unemployment
+
+```{r}
+# Framework I. ==========================================================================
+
+## Bias of framework ####################################################################
+
+names(dat_plm) %>% 
+  { ifelse(
+    . %in% c("geo", "time") | str_detect(., "_l") | str_detect(., "_2"), NA, .
+  )} %>% 
+  na.omit() %>% 
+  lapply(function(variable){
+    x <- pull(dat_plm, variable) %>% na.omit()
+    y <- pull(na.omit(dat_plm), variable)
+    t <- t.test(x, y)
+    tibble(
+      Variable = f.clean_names(variable),
+      'Mean in total sample' = mean(x),
+      'Mean in used sample' = mean(y),
+      'Number of observations in the total sample' = length(x),
+      'T-statistic' = t$statistic,
+      'P-value' = scales::percent(t$p.value, accuracy = .01)
+    )
+  }
+  ) %>% reduce(rbind) %>% 
+  knitr::kable(caption = 'T-tests', digits = 4, 
+               align = c('l', 'c', 'c', 'c', 'c', 'c', 'c'))
+
+```
+
+```{r fig.cap = "Number of used observations by countries when the model contains youth unemployment"}
+dat_plm %>% 
+  na.omit() %>% 
+  group_by(geo) %>% 
+  summarise(
+    values = n()
+  ) %>% 
+  plot_NUTS2(all.x = T)
 
 ```
 
 ```{r}
+### Run lasso regression ################################################################
+
 library(glmnet)
 
 y <- na.omit(dat_plm)$TOTFERRT
@@ -734,15 +770,21 @@ X <- model.matrix(TOTFERRT ~ ., data = select(na.omit(dat_plm), -time))
 LASSO <- cv.glmnet(X, y)
 
 ```
+
 ```{r}
 tidy(LASSO) %>%
   ggplot() + 
   aes(log(lambda), ymin = conf.low*1000, ymax = conf.high*1000) +
   geom_line(aes(log(lambda), estimate*1000, color = "Mean-Squared Error")) +
-  geom_step(aes(y = (156 - nzero), color = "Number of used explanatory variables"), size = 1) +
+  geom_step(aes(y = nzero, color = "Number of used explanatory variables"), 
+            size = 1) +
   geom_ribbon(alpha = .4) + 
-  geom_vline(aes(xintercept = log(LASSO$lambda.1se), color = "lambda.1se"), linetype = 2) +
-  geom_vline(aes(xintercept = log(LASSO$lambda.min), color = "lambda.min"), linetype = 2) +
+  geom_hline(yintercept = 0, size = 1) +
+  geom_vline(aes(xintercept = log(LASSO$lambda.1se), color = "lambda.1se"), 
+             # TODO name the line
+             linetype = 2) +
+  geom_vline(aes(xintercept = log(LASSO$lambda.min), color = "lambda.min"), 
+             linetype = 2) +
   scale_y_continuous(
     name = "Number of used explanatory variables",
     sec.axis = sec_axis( trans=~./1000, name = "Mean-Squared Error")
@@ -771,7 +813,6 @@ m_panels2 <- paste("TOTFERRT ~", paste(lasso_coefs$term, collapse = " + ")) %>%
     pooling <- plm(eval(formula), data = dat_plm, model = "pooling")
     within <- plm(eval(formula), data = dat_plm, model = "within")
     random <- plm(eval(formula), data = dat_plm, model = "random")
-    
     list(
       tests = c(
         pooltest(pooling, within)$p.value,
@@ -807,12 +848,217 @@ standard_beta <- augment(m_panels2[[1]]$OLS) %>%
   rownames_to_column() %>% 
   rename(term = rowname) %>% 
   merge(standard_beta) %>% 
-  mutate(explain = TOTFERRT*beta) %>% 
+  mutate(explain = abs(TOTFERRT*beta)) %>% 
   select(term, cor = TOTFERRT, standard_beta = beta, explain)
 
 ```
 
 
+```{r fig.height=6, fig.cap="Estimated coefficient of the fixed panel model controlling for youth unemployment indicators"}
+lasso_coefs %>% 
+  rename(lasso = coef) %>% 
+  merge(tidy(m_panels2[[1]]$OLS, conf.int = T)) %>% 
+  merge(standard_beta) %>% 
+  mutate_at(-1, function(x) as.numeric(x)) %>% 
+  pivot_longer(c(lasso:estimate, cor:explain)) %>% 
+  mutate(
+    conf.low = ifelse(name != "estimate", NA, conf.low),
+    conf.high = ifelse(name != "estimate", NA, conf.high),
+    lag = ifelse(str_detect(term, "_l"), 
+                 ifelse(str_detect(term, "_l_l"), 2, 1), 0),
+    bar = ifelse(name %in% c("cor", "explain"), value, NA),
+    value = ifelse(!(name %in% c("cor", "explain")), value, NA),
+    term = f.clean_names(term, Tosparse = T),
+    term = gsub("_2", "^2", term),
+    term = gsub("_l_l", '["t = -2"]', term),
+    term = gsub("_l", '["t = -1"]', term),
+    name = case_when(
+      name == "cor" ~ 'Correlation coefficient',
+      name == "estimate" ~ 'Coefficient in OLS',
+      name == "lasso" ~ 'Coefficient in lasso regression',
+      name == "standard_beta" ~ 'Standardized coefficient',
+      name == "explain" ~ 'Contribution to R-squared'
+    ),
+    name = factor(
+      name, levels = c(
+        'Correlation coefficient',
+        'Coefficient in lasso regression',
+        'Coefficient in OLS',
+        'Standardized coefficient',
+        'Contribution to R-squared'
+      )
+    ),
+  ) %>% 
+  {  
+    ggplot(.) +
+      geom_vline(xintercept = 0) +
+      geom_point(aes(value, term, fill = factor(lag)), size = 3) +
+      geom_col(aes(bar, term, fill = factor(lag)), color = "black") +
+      scale_fill_viridis_d(option = "magma", begin = .3, end = .7) +
+      scale_y_discrete(labels=scales::parse_format()) +
+      facet_wrap(~ name, scales = "free_x") +
+      labs(x = NULL, y = "Term", fill = "Lag") +
+      theme(legend.position = "bottom", legend.direction = "horizontal")
+  }
+
+```
+
+## Framework II: without unemployment
+
+```{r}
+dat_plm <- dat_plm %>% 
+  select(!starts_with("uY"))
+
+```
+
+```{r}
+LASSO <- cv.glmnet(model.matrix(TOTFERRT ~ ., data = select(na.omit(dat_plm), -time)), 
+                   na.omit(dat_plm)$TOTFERRT)
+
+```
+
+```{r}
+names(dat_plm) %>% 
+  {ifelse(
+    . %in% c("geo", "time") | str_detect(., "_l") | str_detect(., "_2"), NA, .
+  )} %>% 
+  na.omit() %>% 
+  lapply(function(variable){
+    x <- pull(dat_plm, variable) %>% na.omit()
+    y <- pull(na.omit(dat_plm), variable)
+    t <- t.test(x, y)
+    tibble(
+      Variable = f.clean_names(variable),
+      'Mean in total sample' = mean(x),
+      'Mean in used sample' = mean(y),
+      'Number of observations in total sample' = length(x),
+      'T-statistic' = t$statistic,
+      'P-value' = scales::percent(t$p.value, accuracy = .01)
+    )
+  }
+  ) %>% reduce(rbind) %>% 
+  knitr::kable(caption = 'T-tests', digits = 4, 
+               align = c('l', 'c', 'c', 'c', 'c', 'c', 'c'))
+
+```
+
+```{r fig.cap = "Number of used observations by countries when the model does not contain youth unemployment"}
+dat_plm %>% 
+  na.omit() %>% 
+  group_by(geo) %>% 
+  summarise(
+    values = n()
+  ) %>% 
+  plot_NUTS2(all.x = T)
+
+```
+
+```{r}
+lasso_coefs <- capture.output(
+  coef(LASSO, LASSO$lambda.1se)
+) %>% 
+  .[-(1:2)] %>% 
+  {tibble(x = .)} %>% 
+  mutate(term = gsub(" .*", "", x), coef = gsub(".* ", "", x)) %>% 
+  select(-x) %>% 
+  filter(!str_detect(term, "geo") & coef != "" & term != "(Intercept)")
+
+```
+
+```{r}
+m_panels2 <- paste("TOTFERRT ~", paste(lasso_coefs$term, collapse = " + ")) %>% 
+  lapply(function(formula) {
+    pooling <- plm(eval(formula), data = dat_plm, model = "pooling")
+    within <- plm(eval(formula), data = dat_plm, model = "within")
+    random <- plm(eval(formula), data = dat_plm, model = "random")
+    list(
+      tests = c(
+        pooltest(pooling, within)$p.value,
+        phtest(within, random)$p.value,
+        plm::r.squared(within, dfcor = T)),
+      model = within,
+      OLS = lm(data = dat_plm, formula = eval(paste(formula, "+ geo")))
+    )
+  }
+  )
+
+```
+
+```{r eval = F}
+m_panels2 %>% 
+  lapply(function(output) {
+    output$tests
+  }) 
+
+```
+
+```{r}
+standard_beta <- m_panels2[[1]]$OLS %>% 
+  QuantPsyc::lm.beta() %>% 
+  {tibble(term = names(.), beta = .)} %>% 
+  filter(!str_detect(term, "geo"))
+
+standard_beta <- augment(m_panels2[[1]]$OLS) %>% 
+  select(TOTFERRT:edu_index) %>% 
+  cor() %>% 
+  data.frame() %>% 
+  select(1) %>% 
+  rownames_to_column() %>% 
+  rename(term = rowname) %>% 
+  merge(standard_beta) %>% 
+  mutate(explain = abs(TOTFERRT*beta)) %>% 
+  select(term, cor = TOTFERRT, standard_beta = beta, explain)
+
+```
+
+```{r fig.height=6, fig.cap="Estimated coefficient of the fixed panel model omitting youth unemployment indicators"}
+lasso_coefs %>% 
+  rename(lasso = coef) %>% 
+  merge(tidy(m_panels2[[1]]$OLS, conf.int = T)) %>% 
+  merge(standard_beta) %>% 
+  mutate_at(-1, function(x) as.numeric(x)) %>% 
+  pivot_longer(c(lasso:estimate, cor:explain)) %>% 
+  mutate(
+    conf.low = ifelse(name != "estimate", NA, conf.low),
+    conf.high = ifelse(name != "estimate", NA, conf.high),
+    lag = ifelse(str_detect(term, "_l"), 
+                 ifelse(str_detect(term, "_l_l"), 2, 1), 0),
+    bar = ifelse(name %in% c("cor", "explain"), value, NA),
+    value = ifelse(!(name %in% c("cor", "explain")), value, NA),
+    term = f.clean_names(term, Tosparse = T),
+    term = gsub("_2", "^2", term),
+    term = gsub("_l_l", '["t = -2"]', term),
+    term = gsub("_l", '["t = -1"]', term),
+    name = case_when(
+      name == "cor" ~ 'Correlation coefficient',
+      name == "estimate" ~ 'Coefficient in OLS',
+      name == "lasso" ~ 'Coefficient in lasso regression',
+      name == "standard_beta" ~ 'Standardized coefficient',
+      name == "explain" ~ 'Contribution to R-squared'
+    ),
+    name = factor(
+      name, levels = c(
+        'Correlation coefficient',
+        'Coefficient in lasso regression',
+        'Coefficient in OLS',
+        'Standardized coefficient',
+        'Contribution to R-squared'
+      )
+    )
+  ) %>% 
+  {  
+    ggplot(.) +
+      geom_vline(xintercept = 0) +
+      geom_point(aes(value, term, fill = factor(lag)), size = 3) +
+      geom_col(aes(bar, term, fill = factor(lag)), color = "black") +
+      scale_fill_viridis_d(option = "magma", begin = .3, end = .7) +
+      scale_y_discrete(labels=scales::parse_format()) +
+      facet_wrap(~ name, scales = "free_x") +
+      labs(x = NULL, y = "Term", fill = "Lag") +
+      theme(legend.position = "bottom", legend.direction = "horizontal")
+  }
+
+```
 
 
 \pagebreak

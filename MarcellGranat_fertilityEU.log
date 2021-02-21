@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.12) (preloaded format=pdflatex 2021.2.5)  18 FEB 2021 16:21
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.12) (preloaded format=pdflatex 2021.2.5)  21 FEB 2021 13:17
 entering extended mode
 **./MarcellGranat_fertilityEU.tex
 (MarcellGranat_fertilityEU.tex
@@ -663,7 +663,7 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 
 {C:/Users/Marci/AppData/Local/MiKTeX/pdftex/config/pdftex.map} <./logo.png>] [2
 ]
-<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-1-1.pdf, id=42, 469
+<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-1-1.pdf, id=52, 469
 .755pt x 325.215pt>
 File: MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-1-1.pdf Graphi
 c file (type pdf)
@@ -671,218 +671,318 @@ c file (type pdf)
 Package pdftex.def Info: MarcellGranat_fertilityEU_files/figure-latex/unnamed-c
 hunk-1-1.pdf  used on input line 166.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[3 <./MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-1-1.pdf>]
-<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-7-1.pdf, id=72, 469
+<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-3-1.pdf, id=53, 469
 .755pt x 325.215pt>
-File: MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-7-1.pdf Graphi
+File: MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-3-1.pdf Graphi
 c file (type pdf)
-<use MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-7-1.pdf>
+<use MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-3-1.pdf>
 Package pdftex.def Info: MarcellGranat_fertilityEU_files/figure-latex/unnamed-c
-hunk-7-1.pdf  used on input line 220.
+hunk-3-1.pdf  used on input line 179.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[4 <./MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-7-1.pdf>]
-<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-11-1.pdf, id=92, 46
+[3 <./MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-1-1.pdf>]
+<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-6-1.pdf, id=84, 469
+.755pt x 325.215pt>
+File: MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-6-1.pdf Graphi
+c file (type pdf)
+<use MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-6-1.pdf>
+Package pdftex.def Info: MarcellGranat_fertilityEU_files/figure-latex/unnamed-c
+hunk-6-1.pdf  used on input line 206.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-9-1.pdf, id=85, 469
+.755pt x 325.215pt>
+File: MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-9-1.pdf Graphi
+c file (type pdf)
+<use MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-9-1.pdf>
+Package pdftex.def Info: MarcellGranat_fertilityEU_files/figure-latex/unnamed-c
+hunk-9-1.pdf  used on input line 236.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-13-1.pdf, id=86, 46
 9.755pt x 325.215pt>
-File: MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-11-1.pdf Graph
+File: MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-13-1.pdf Graph
 ic file (type pdf)
-<use MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-11-1.pdf>
+<use MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-13-1.pdf>
 Package pdftex.def Info: MarcellGranat_fertilityEU_files/figure-latex/unnamed-c
-hunk-11-1.pdf  used on input line 251.
+hunk-13-1.pdf  used on input line 267.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
-Overfull \hbox (7.3674pt too wide) in alignment at lines 255--263
+Overfull \hbox (7.3674pt too wide) in alignment at lines 271--279
  [] [] [] [] [] [] [] [] [] [] 
  []
 
 
-Overfull \hbox (7.3674pt too wide) in alignment at lines 263--268
+Overfull \hbox (7.3674pt too wide) in alignment at lines 279--284
  [] [] [] [] [] [] [] [] [] [] 
  []
 
 
-Overfull \hbox (7.3674pt too wide) in alignment at lines 268--274
+Overfull \hbox (7.3674pt too wide) in alignment at lines 284--290
  [] [] [] [] [] [] [] [] [] [] 
  []
 
-<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-18-1.pdf, id=93, 46
+<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-21-1.pdf, id=87, 46
 9.755pt x 325.215pt>
-File: MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-18-1.pdf Graph
-ic file (type pdf)
-<use MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-18-1.pdf>
-Package pdftex.def Info: MarcellGranat_fertilityEU_files/figure-latex/unnamed-c
-hunk-18-1.pdf  used on input line 279.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-19-1.pdf, id=94, 46
-9.755pt x 433.62pt>
-File: MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-19-1.pdf Graph
-ic file (type pdf)
-<use MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-19-1.pdf>
-Package pdftex.def Info: MarcellGranat_fertilityEU_files/figure-latex/unnamed-c
-hunk-19-1.pdf  used on input line 281.
-(pdftex.def)             Requested size: 469.75386pt x 433.61894pt.
-[5 <./MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-18-1.pdf>] [6 
-<./MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-11-1.pdf>]
-<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-20-1.pdf, id=129, 4
-69.755pt x 325.215pt>
-File: MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-20-1.pdf Graph
-ic file (type pdf)
-<use MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-20-1.pdf>
-Package pdftex.def Info: MarcellGranat_fertilityEU_files/figure-latex/unnamed-c
-hunk-20-1.pdf  used on input line 283.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-21-1.pdf, id=130, 4
-69.755pt x 325.215pt>
 File: MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-21-1.pdf Graph
 ic file (type pdf)
 <use MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-21-1.pdf>
 Package pdftex.def Info: MarcellGranat_fertilityEU_files/figure-latex/unnamed-c
-hunk-21-1.pdf  used on input line 287.
+hunk-21-1.pdf  used on input line 303.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[7 <./MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-19-1.pdf>]
-<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-23-1.pdf, id=144, 4
-69.755pt x 325.215pt>
+<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-22-1.pdf, id=88, 46
+9.755pt x 433.62pt>
+File: MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-22-1.pdf Graph
+ic file (type pdf)
+<use MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-22-1.pdf>
+Package pdftex.def Info: MarcellGranat_fertilityEU_files/figure-latex/unnamed-c
+hunk-22-1.pdf  used on input line 310.
+(pdftex.def)             Requested size: 469.75386pt x 433.61894pt.
+<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-23-1.pdf, id=89, 46
+9.755pt x 325.215pt>
 File: MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-23-1.pdf Graph
 ic file (type pdf)
 <use MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-23-1.pdf>
 Package pdftex.def Info: MarcellGranat_fertilityEU_files/figure-latex/unnamed-c
-hunk-23-1.pdf  used on input line 291.
+hunk-23-1.pdf  used on input line 316.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-24-1.pdf, id=145, 4
-69.755pt x 325.215pt>
+<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-24-1.pdf, id=90, 46
+9.755pt x 325.215pt>
 File: MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-24-1.pdf Graph
 ic file (type pdf)
 <use MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-24-1.pdf>
 Package pdftex.def Info: MarcellGranat_fertilityEU_files/figure-latex/unnamed-c
-hunk-24-1.pdf  used on input line 295.
+hunk-24-1.pdf  used on input line 322.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[8 <./MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-20-1.pdf>] [9 
-<./MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-21-1.pdf>]
-<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-26-1.pdf, id=189, 4
-69.755pt x 325.215pt>
+<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-26-1.pdf, id=91, 46
+9.755pt x 325.215pt>
 File: MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-26-1.pdf Graph
 ic file (type pdf)
 <use MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-26-1.pdf>
 Package pdftex.def Info: MarcellGranat_fertilityEU_files/figure-latex/unnamed-c
-hunk-26-1.pdf  used on input line 302.
+hunk-26-1.pdf  used on input line 329.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-28-1.pdf, id=190, 4
-69.755pt x 325.215pt>
-File: MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-28-1.pdf Graph
+<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-29-1.pdf, id=92, 46
+9.755pt x 325.215pt>
+File: MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-29-1.pdf Graph
 ic file (type pdf)
-<use MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-28-1.pdf>
+<use MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-29-1.pdf>
 Package pdftex.def Info: MarcellGranat_fertilityEU_files/figure-latex/unnamed-c
-hunk-28-1.pdf  used on input line 308.
+hunk-29-1.pdf  used on input line 339.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-31-1.pdf, id=191, 4
+[4] [5 <./MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-3-1.pdf>] 
+[6 <./MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-6-1.pdf>] [7 <
+./MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-9-1.pdf>] [8 <./Ma
+rcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-13-1.pdf>] [9 <./Marce
+llGranat_fertilityEU_files/figure-latex/unnamed-chunk-21-1.pdf>] [10 <./Marcell
+Granat_fertilityEU_files/figure-latex/unnamed-chunk-22-1.pdf>] [11 <./MarcellGr
+anat_fertilityEU_files/figure-latex/unnamed-chunk-23-1.pdf>] [12 <./MarcellGran
+at_fertilityEU_files/figure-latex/unnamed-chunk-24-1.pdf>] [13 <./MarcellGranat
+_fertilityEU_files/figure-latex/unnamed-chunk-26-1.pdf>] [14 <./MarcellGranat_f
+ertilityEU_files/figure-latex/unnamed-chunk-29-1.pdf>]
+Overfull \hbox (2.05437pt too wide) in paragraph at lines 409--410
+ []\T1/lmr/m/n/10 (-20) 33.48%| 
+ []
+
+
+Overfull \hbox (2.05437pt too wide) in paragraph at lines 487--488
+ []\T1/lmr/m/n/10 (-20) 21.16%| 
+ []
+
+
+Overfull \hbox (2.30437pt too wide) in paragraph at lines 500--501
+ []\T1/lmr/m/n/10 (-20) 57.19%| 
+ []
+
+<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-32-1.pdf, id=301, 4
 69.755pt x 325.215pt>
-File: MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-31-1.pdf Graph
+File: MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-32-1.pdf Graph
 ic file (type pdf)
-<use MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-31-1.pdf>
+<use MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-32-1.pdf>
 Package pdftex.def Info: MarcellGranat_fertilityEU_files/figure-latex/unnamed-c
-hunk-31-1.pdf  used on input line 315.
+hunk-32-1.pdf  used on input line 507.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[10 <./MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-23-1.pdf>] [1
-1 <./MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-24-1.pdf>] [12 
-<./MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-26-1.pdf>] [13 <.
-/MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-28-1.pdf>] [14 <./M
-arcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-31-1.pdf>] (MarcellGr
-anat_fertilityEU.bbl) [15]
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 3
-46.
+<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-34-1.pdf, id=302, 4
+69.755pt x 325.215pt>
+File: MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-34-1.pdf Graph
+ic file (type pdf)
+<use MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-34-1.pdf>
+Package pdftex.def Info: MarcellGranat_fertilityEU_files/figure-latex/unnamed-c
+hunk-34-1.pdf  used on input line 512.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-39-1.pdf, id=303, 4
+69.755pt x 433.62pt>
+File: MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-39-1.pdf Graph
+ic file (type pdf)
+<use MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-39-1.pdf>
+Package pdftex.def Info: MarcellGranat_fertilityEU_files/figure-latex/unnamed-c
+hunk-39-1.pdf  used on input line 516.
+(pdftex.def)             Requested size: 469.75386pt x 433.61894pt.
+[15] [16 <./MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-32-1.pdf
+>]
+Overfull \hbox (1.80437pt too wide) in paragraph at lines 583--584
+ []\T1/lmr/m/n/10 (-20) 13.84%| 
+ []
+
+
+Overfull \hbox (2.30437pt too wide) in paragraph at lines 622--623
+ []\T1/lmr/m/n/10 (-20) 81.31%| 
+ []
+
+<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-43-1.pdf, id=325, 4
+69.755pt x 325.215pt>
+File: MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-43-1.pdf Graph
+ic file (type pdf)
+<use MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-43-1.pdf>
+Package pdftex.def Info: MarcellGranat_fertilityEU_files/figure-latex/unnamed-c
+hunk-43-1.pdf  used on input line 629.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+<MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-48-1.pdf, id=326, 4
+69.755pt x 433.62pt>
+File: MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-48-1.pdf Graph
+ic file (type pdf)
+<use MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-48-1.pdf>
+Package pdftex.def Info: MarcellGranat_fertilityEU_files/figure-latex/unnamed-c
+hunk-48-1.pdf  used on input line 636.
+(pdftex.def)             Requested size: 469.75386pt x 433.61894pt.
+[17 <./MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-34-1.pdf>] [1
+8 <./MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-39-1.pdf>] [19 
+<./MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-43-1.pdf>] [20 <.
+/MarcellGranat_fertilityEU_files/figure-latex/unnamed-chunk-48-1.pdf>] (Marcell
+Granat_fertilityEU.bbl) [21]
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 6
+54.
 (C:\Users\Marci\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 351.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 659.
 LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 
-390.
+697.
 (C:\Users\Marci\AppData\Local\Programs\MiKTeX\tex/latex/lm\ts1lmtt.fd
 File: ts1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-Overfull \vbox (1.68536pt too high) detected at line 917
- []
-
-[16]
-Underfull \vbox (badness 10000) detected at line 917
- []
-
-
-Underfull \vbox (badness 10000) detected at line 917
- []
-
-[17]
-Underfull \vbox (badness 10000) detected at line 917
- []
-
-
-Underfull \vbox (badness 10000) detected at line 917
- []
-
-[18]
-Underfull \vbox (badness 10000) detected at line 917
- []
-
-
-Underfull \vbox (badness 10000) detected at line 917
- []
-
-[19]
-Underfull \vbox (badness 10000) detected at line 917
- []
-
-
-Underfull \vbox (badness 10000) detected at line 917
- []
-
-[20]
-Underfull \vbox (badness 10000) detected at line 917
- []
-
-
-Underfull \vbox (badness 10000) detected at line 917
- []
-
-[21]
-Underfull \vbox (badness 10000) detected at line 917
- []
-
-
-Underfull \vbox (badness 10000) detected at line 917
+Overfull \vbox (1.68536pt too high) detected at line 1491
  []
 
 [22]
-Underfull \vbox (badness 10000) detected at line 917
+Underfull \vbox (badness 10000) detected at line 1491
  []
 
 
-Underfull \vbox (badness 10000) detected at line 917
+Underfull \vbox (badness 10000) detected at line 1491
  []
 
 [23]
-Underfull \vbox (badness 10000) detected at line 917
+Underfull \vbox (badness 10000) detected at line 1491
  []
 
 
-Underfull \vbox (badness 10000) detected at line 917
+Underfull \vbox (badness 10000) detected at line 1491
  []
 
 [24]
-Underfull \vbox (badness 10000) detected at line 917
+Underfull \vbox (badness 10000) detected at line 1491
  []
 
 
-Underfull \vbox (badness 10000) detected at line 917
+Underfull \vbox (badness 10000) detected at line 1491
  []
 
-[25] [26] (MarcellGranat_fertilityEU.aux) ) 
+[25]
+Underfull \vbox (badness 10000) detected at line 1491
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 1491
+ []
+
+[26]
+Underfull \vbox (badness 10000) detected at line 1491
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 1491
+ []
+
+[27]
+Underfull \vbox (badness 10000) detected at line 1491
+ []
+
+
+Overfull \vbox (0.18224pt too high) detected at line 1491
+ []
+
+[28]
+Underfull \vbox (badness 10000) detected at line 1491
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 1491
+ []
+
+[29]
+Underfull \vbox (badness 10000) detected at line 1491
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 1491
+ []
+
+[30]
+Underfull \vbox (badness 10000) detected at line 1491
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 1491
+ []
+
+[31]
+Underfull \vbox (badness 10000) detected at line 1491
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 1491
+ []
+
+[32]
+Underfull \vbox (badness 10000) detected at line 1491
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 1491
+ []
+
+[33]
+Underfull \vbox (badness 10000) detected at line 1491
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 1491
+ []
+
+[34]
+Underfull \vbox (badness 10000) detected at line 1491
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 1491
+ []
+
+[35]
+Underfull \vbox (badness 10000) detected at line 1491
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 1491
+ []
+
+[36] [37] (MarcellGranat_fertilityEU.aux) ) 
 Here is how much of TeX's memory you used:
- 15164 strings out of 479697
- 229562 string characters out of 2867134
- 705307 words of memory out of 3000000
- 31808 multiletter control sequences out of 15000+200000
- 476251 words of font info for 120 fonts, out of 3000000 for 9000
+ 15229 strings out of 479697
+ 231556 string characters out of 2867134
+ 781405 words of memory out of 3000000
+ 31837 multiletter control sequences out of 15000+200000
+ 476027 words of font info for 120 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 79i,12n,85p,532b,468s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 79i,11n,85p,532b,468s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Users/Marci/AppData/Local/Progra
 ms/MiKTeX/fonts/enc/dvips/lm/lm-ts1.enc}{C:/Users/Marci/AppData/Local/Programs/
 MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}{C:/Users/Marci/AppData/Local/Programs/MiKT
@@ -904,9 +1004,9 @@ lic/lm/lmri10.pfb><C:/Users/Marci/AppData/Local/Programs/MiKTeX/fonts/type1/pub
 lic/lm/lmtk10.pfb><C:/Users/Marci/AppData/Local/Programs/MiKTeX/fonts/type1/pub
 lic/lm/lmtt10.pfb><C:/Users/Marci/AppData/Local/Programs/MiKTeX/fonts/type1/pub
 lic/lm/lmtti10.pfb>
-Output written on MarcellGranat_fertilityEU.pdf (26 pages, 5356615 bytes).
+Output written on MarcellGranat_fertilityEU.pdf (37 pages, 6540723 bytes).
 PDF statistics:
- 446 PDF objects out of 1000 (max. 8388607)
- 61 named destinations out of 1000 (max. 500000)
- 41098 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 604 PDF objects out of 1000 (max. 8388607)
+ 92 named destinations out of 1000 (max. 500000)
+ 41158 words of extra memory for PDF output out of 42996 (max. 10000000)
 
