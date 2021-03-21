@@ -15,7 +15,7 @@ header-includes:
 - \fancyhf{}
 - \fancyhead[LE,RO]{Marcell Granát}
 - \fancyhead[RE,LO]{\leftmark}
-- \fancyfoot[C]{\thepage}
+- \pagenumbering{gobble}
 - \usepackage{lscape}
 - \usepackage{pdfpages}
 - \usepackage{titling}
@@ -28,8 +28,20 @@ editor_options:
 \pagebreak
 
 \begin{abstract}
-Here is the abstract.
+1. probléma felvetése
+2. kutatási kérdés
+bevett változók miként befolyásolják a TTA-t
+
+3. módszertan megnevezése
+adattranszformáció (indexek összeállítása, PCA), panel, lasso
+
+4. saját eredmény röviden
+
+2 végső output összefoglalása
 \end{abstract}
+
+\listoftables
+\listoffigures
 
 \pagebreak
 
@@ -68,7 +80,8 @@ extrafont::loadfonts(device="win")
 theme_set(theme_minimal() + theme(
   legend.direction = "vertical",
   # text = element_text(family = "Impact"),
-  plot.caption = element_text(family = "serif")
+  plot.caption = element_text(family = "serif"),
+  legend.key=element_blank()
 ))
 
 ```
@@ -77,7 +90,19 @@ theme_set(theme_minimal() + theme(
 
 # Introduction
 
-Ay alábbi rövid kézirat a brit **Family Expenditure Survey** adataiból kinyert fogyasztási jellemzőket tárgyalja. Az empirikus elemzés egyszerű lineáris regresszió alkalmazásával készül. Az adatok összesen 1519 család jövedelmét és kiadását tartalmazzák, továbbá 6 termékcsoport (alkohol, ruházkodás, nem alkoholtartalmú élelmiszer, fűtés, közlekedés, egyéb) fogyasztáson belüli részarányát. Dolgozatom során én kizárólag az egy gyermekes családokra szűkítem az elemzést^[Feladatkiírás által előírt megkötés.].
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+1. motiváció
+2. szűk szakirodalom eredményei
+3. hipotézis
+4. hipotézishez kapcsolódó szakirodalom eredményei
+5. tanulmány fő lépései
+6. módszertan mögötti indoklás
+7. főbb eredmények
+8. mit ad hozzá az irodalomhoz
+
+
 
 ```{r fig.cap = "Seemingly negative effect of gross domestic product on fertility rates based on nation level observations (2017)"}
 # https://data.worldbank.org/indicator/SP.DYN.TFRT.IN
@@ -140,7 +165,8 @@ plot_NUTS2 <- function(df, viridis_c = T, ..., all.x = F) {
 # Fertility: source: Eurostat database ==================================================
 
 f_data <- get_eurostat("demo_r_find2", time_format = "num") %>% 
-  select(geo, time, var = indic_de, values)
+  select(geo, time, var = indic_de, values) %>% 
+  filter(!str_detect(geo, "TR"))
 
 ```
 
@@ -149,8 +175,7 @@ f_data <- get_eurostat("demo_r_find2", time_format = "num") %>%
 
 f_data %>% 
   filter(var == "TOTFERRT" & str_length(geo) == 4 & time == 2017) %>% 
-  plot_NUTS2()
-
+  plot_NUTS2(limits = c(1, 3)) 
 ```
 
 ## Human development
@@ -265,7 +290,7 @@ GDL_subnat %>%
 
 ```{r}
 GDP_index <- get_eurostat("nama_10r_2gdp", time_format = "num") %>% 
-  filter(unit == "PPS_HAB") %>%  # Purchasing power standard (PPS) per inhabitant
+  filter(unit == "PPS_EU27_2020_HAB") %>%  # Purchasing power standard (PPS) per inhabitant
   select(-unit) %>%
   rename(GDP = values) %>% merge(
     get_eurostat("ert_bil_eur_a", time_format = "num") %>% # EUR/USD annual avg exc r
@@ -303,14 +328,6 @@ merge(GDL_subnat, GDP_index) %>%
     caption = "Indicators of similiarity between the income component of the 
     Human Development Indices provided by GDL and the estimation based on regional GDP"
   )
-
-```
-
-```{r fig.cap = "Calculated income index based on regional GDP data"}
-GDP_index %>% 
-  filter(time == 2017) %>% 
-  select(geo, values = GDPindex) %>% 
-  plot_NUTS2
 
 ```
 
@@ -355,7 +372,7 @@ merge(GDL_subnat, health_index) %>%
 ```{r}
 edu_wide <- get_eurostat("edat_lfse_04", time_format = "num") %>% 
   filter(sex == "T" & !str_detect(isced11, "GEN") & 
-           !str_detect(isced11, "VOC") & isced11 != "ED3-8"
+           !str_detect(isced11, "VOC") & isced11 != "ED3-8" & !str_detect(geo, "TR")
   ) %>% 
   mutate(
     var = str_c(age, ":", isced11)
@@ -465,7 +482,8 @@ dat <- f_data %>%
   pivot_wider(names_from = var, values_from = values) %>% 
   merge(edu_index, all = T) %>% 
   merge(health_index, all = T) %>% 
-  merge(GDP_index, all = T) 
+  merge(GDP_index, all = T) %>% 
+  filter(!str_detect(geo, "TR"))
 
 ```
 
@@ -499,7 +517,8 @@ yth_empl_byage <- get_eurostat("yth_empl_110", time_format = "num") %>%
 dat <- dat %>% 
   mutate(country = str_sub(geo, end = 2)) %>% 
   merge(FAM_df, all.x = T, all.y = F) %>% 
-  merge(yth_empl_byage, all.x = T, all.y = F)
+  merge(yth_empl_byage, all.x = T, all.y = F) %>% 
+  filter(!str_detect(geo, "TR"))
 
 ```
 
@@ -550,12 +569,21 @@ dat %>%
 ```{r fig.cap = "Correlation between TFR and family benefits"}
 dat %>% 
   filter(str_length(geo) == 2) %>% 
-  ggplot(aes(FAM, TOTFERRT)) + geom_point() +
-  ggformula::geom_spline() +
+{ggplot(., aes(FAM, TOTFERRT)) + 
+  geom_vline(aes(xintercept = mean(.$FAM, na.rm = T), linetype = "means")) +
+  geom_hline(yintercept = mean(.$TOTFERRT, na.rm = T), linetype = 2) +
+  geom_point() +
+  geom_smooth(method = "lm", aes(color = "Linear trend"), size = 1.5) +
+  scale_color_viridis_d() +
+  scale_linetype_manual(values = c("means" = 2)) +
   labs(y = "Total fertility rate (birth per woman)", 
        x = "Family benefit (% of GPD)",
-       caption = "The trend is drawn via splines."
-  )
+       linetype = NULL, color = NULL
+  ) +
+    theme(
+      legend.position = "bottom"
+    )
+  }
 
 ```
 
@@ -590,8 +618,6 @@ m_part2 <- dat %>%
 m_part2 %>% rattle::fancyRpartPlot(palettes = 'PuRd', sub = NULL)
 
 ```
-
-
 
 # Model building
 
@@ -660,9 +686,28 @@ m_panels <- c(
         phtest(within, random)$p.value,
         plm::r.squared(within, dfcor = T)),
       model = within,
-      OLS = lm(data = dat_plm, formula = eval(paste(formula, "+ geo")))
+      OLS = formula %>% 
+  str_replace_all('\\~', ',') %>% 
+  str_replace_all('\\+', ',') %>% 
+  str_split(',') %>% 
+  .[[1]] %>% 
+  trimws() %>% 
+  {c(., 'geo')} %>% 
+  {select(dat_plm, .)} %>% 
+  na.omit() %>% 
+  group_by(geo) %>% 
+  summarise_all(.funs = function(x) mean(x)) %>% 
+  merge(
+    plm::fixef(within) %>% 
+      {tibble(geo = names(.), a = .)}
+  ) %>% 
+  mutate(
+    TOTFERRT = TOTFERRT - a
+  ) %>% 
+  lm(formula = formula) 
     )
   })
+
 ```
 
 ```{r fig.cap="Panel models on the total fertility rates"}
@@ -696,6 +741,7 @@ m_panels %>%
   )
 
 ```
+
 
 ```{r}
 ### Model descriptions ##################################################################
@@ -756,7 +802,9 @@ dat_plm %>%
   summarise(
     values = n()
   ) %>% 
-  plot_NUTS2(all.x = T)
+  plot_NUTS2(all.x = T) +
+  scale_fill_viridis_b(option = "magma", direction = -1, begin = .2,
+                                  na.value = "white")
 
 ```
 
@@ -819,7 +867,25 @@ m_panels2 <- paste("TOTFERRT ~", paste(lasso_coefs$term, collapse = " + ")) %>%
         phtest(within, random)$p.value,
         plm::r.squared(within, dfcor = T)),
       model = within,
-      OLS = lm(data = dat_plm, formula = eval(paste(formula, "+ geo")))
+      OLS = formula %>% 
+  str_replace_all('\\~', ',') %>% 
+  str_replace_all('\\+', ',') %>% 
+  str_split(',') %>% 
+  .[[1]] %>% 
+  trimws() %>% 
+  {c(., 'geo')} %>% 
+  {select(dat_plm, .)} %>% 
+  na.omit() %>% 
+  group_by(geo) %>% 
+  summarise_all(.funs = function(x) mean(x)) %>% 
+  merge(
+    plm::fixef(within) %>% 
+      {tibble(geo = names(.), a = .)}
+  ) %>% 
+  mutate(
+    TOTFERRT = TOTFERRT - a
+  ) %>% 
+  lm(formula = formula) 
     )
   }
   )
@@ -841,7 +907,8 @@ standard_beta <- m_panels2[[1]]$OLS %>%
   filter(!str_detect(term, "geo"))
 
 standard_beta <- augment(m_panels2[[1]]$OLS) %>% 
-  select(TOTFERRT:uY25) %>% 
+  select(TOTFERRT:.fitted) %>% 
+  select(-.fitted) %>% 
   cor() %>% 
   data.frame() %>% 
   select(1) %>% 
@@ -903,6 +970,7 @@ lasso_coefs %>%
 
 ```
 
+
 ## Framework II: without unemployment
 
 ```{r}
@@ -949,7 +1017,9 @@ dat_plm %>%
   summarise(
     values = n()
   ) %>% 
-  plot_NUTS2(all.x = T)
+  plot_NUTS2(all.x = T) +
+  scale_fill_viridis_b(option = "magma", direction = -1, begin = .2,
+                                  na.value = "white")
 
 ```
 
@@ -977,7 +1047,25 @@ m_panels2 <- paste("TOTFERRT ~", paste(lasso_coefs$term, collapse = " + ")) %>%
         phtest(within, random)$p.value,
         plm::r.squared(within, dfcor = T)),
       model = within,
-      OLS = lm(data = dat_plm, formula = eval(paste(formula, "+ geo")))
+      OLS = formula %>% 
+  str_replace_all('\\~', ',') %>% 
+  str_replace_all('\\+', ',') %>% 
+  str_split(',') %>% 
+  .[[1]] %>% 
+  trimws() %>% 
+  {c(., 'geo')} %>% 
+  {select(dat_plm, .)} %>% 
+  na.omit() %>% 
+  group_by(geo) %>% 
+  summarise_all(.funs = function(x) mean(x)) %>% 
+  merge(
+    plm::fixef(within) %>% 
+      {tibble(geo = names(.), a = .)}
+  ) %>% 
+  mutate(
+    TOTFERRT = TOTFERRT - a
+  ) %>% 
+  lm(formula = formula) 
     )
   }
   )
@@ -999,7 +1087,8 @@ standard_beta <- m_panels2[[1]]$OLS %>%
   filter(!str_detect(term, "geo"))
 
 standard_beta <- augment(m_panels2[[1]]$OLS) %>% 
-  select(TOTFERRT:edu_index) %>% 
+  select(TOTFERRT:.fitted) %>% 
+  select(-.fitted) %>% 
   cor() %>% 
   data.frame() %>% 
   select(1) %>% 
@@ -1061,10 +1150,7 @@ lasso_coefs %>%
 ```
 
 
-\pagebreak
-\nocite{*}
-\bibliography{fertilityEU}
-\bibliographystyle{agsm}
+
 
 \pagebreak
 

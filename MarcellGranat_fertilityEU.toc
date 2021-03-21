@@ -1,0 +1,14 @@
+\contentsline {section}{Introduction}{1}{section*.4}%
+\contentsline {section}{Data}{1}{section*.5}%
+\contentsline {subsection}{Total fertility rates}{1}{section*.6}%
+\contentsline {subsection}{Human development}{1}{section*.7}%
+\contentsline {subsubsection}{A decent standard of living}{3}{section*.8}%
+\contentsline {subsubsection}{Long and healthy life}{4}{section*.9}%
+\contentsline {subsubsection}{Knowledge}{4}{section*.10}%
+\contentsline {subsection}{Family benefits}{5}{section*.11}%
+\contentsline {subsection}{Youth unemployment}{5}{section*.12}%
+\contentsline {section}{Explore data}{5}{section*.13}%
+\contentsline {section}{Model building}{5}{section*.14}%
+\contentsline {subsection}{Framework I: with unemployment}{5}{section*.15}%
+\contentsline {subsection}{Framework II: without unemployment}{12}{section*.16}%
+\contentsline {section}{Appendix: R codes}{16}{section*.17}%
