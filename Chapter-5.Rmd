@@ -1,0 +1,599 @@
+# Model building {#Chapter-5}
+
+```{css, echo=FALSE}
+p {
+  text-align: justify;
+}
+```
+
+
+Following the findings in the previous chapters, I highlight the main ideas for the model building: 
+(1) Youth unemployment is a significant factor in explaining the variance of fertility, but including it in the model reduces the number of complete observations, so I report one model with the youth unemployment included and one without that. (2) Extending the design matrix with the interactions of youth unemployment rates and fertility is justified. (This extension only concerns the framework which contains unemployment). 
+
+Additionally, concerning the nature of fertility (duration of pregnancy) and childbearing decisions (parents may interpolate their expected socio-economic situation from their past) extending the model with the lagged value of the predictors is also reasonable. This raises the issue that the model contains too many predictors and variable selection becomes difficult. I manage variable selection based on lasso selection.
+
+The first step to estimate panel regression models is to identify the appropriate model type. Choosing among the pooled, within and random-effects model requires performing the Chow test and Hausman test. The null hypothesis in the former one is that whether a significant difference among the individual intercepts exists, and the test is performed based on an F-test. If the given $\text{H}_{0}$ cannot be rejected at any standard significance level, estimating a pooled model is suggested. In other cases, the outcome depends on the result of the Hausman test. The Hausman test (or Durbin-Wu-Hausman test) is more complex from mathematical aspects, but the interpretation is simple: if the given $\text{H}_{0}$ cannot be rejected, the within (fixed-effects) model is not as efficient as the random-effects, and estimating random-effects model is suggested. If the null hypothesis is rejected at any standard significance level, the fixed-effects model will be suitable \cite{wooldridge}.
+
+The optimal model may differ if the set of predictors change, but as a starting point, I estimate the one-one simplest model for the two mentioned model frameworks (including unemployment statistics or not). These models do not contain interaction but lagged effect and quadratic terms are included. The performed tests show that the fixed-effects model is optimal (see the results in Table 5), and the estimated coefficients from the fixed-effects models are presented in figure 10. 
+
+```{r}
+# Model building ------------------------------------------------------------------------
+
+# Transform the data for panel modeling =================================================
+
+dat_plm <- dat %>% 
+  select(
+    geo, time, TOTFERRT, edu_index, health_index, GDPindex, FAM, uY15, uY20, uY25
+  ) %>% 
+  mutate( # TODO new element
+    Fu15 = FAM*uY15,
+    Fu20 = FAM*uY20,
+    Fu25 = FAM*uY25
+  ) %>% # TODO end of new
+  filter(str_length(geo) == 4 & !is.na(TOTFERRT))
+
+dat_plm <- dat_plm %>% 
+  select(-TOTFERRT) %>% 
+  mutate(time = time + 1) %>% 
+  {
+    set_names(., ifelse(names(.) == 'geo' | names(.) == 'time', names(.), 
+                        paste0(names(.), '_l')))
+  } %>% 
+  merge(dat_plm, all.x = F, all.y = T)
+
+dat_plm <- dat_plm %>% 
+  select(!ends_with("_l")) %>% 
+  select(-TOTFERRT) %>% 
+  mutate(time = time + 2) %>% 
+  {
+    set_names(., ifelse(names(.) == 'geo' | names(.) == 'time', names(.), 
+                        paste0(names(.), '_l_l')))
+  } %>% 
+  merge(dat_plm, all.x = F, all.y = T)
+
+dat_plm <- dat_plm %>% 
+  select(-TOTFERRT) %>% 
+  mutate_at(-(1:2), function(x) x^2) %>% 
+  {
+    set_names(., ifelse(names(.) == 'geo' | names(.) == 'time', names(.), 
+                        paste0(names(.), '_2')))
+  } %>% 
+  merge(dat_plm, all.x = F, all.y = T) %>% 
+  select(-c("Fu15_l_l_2", "Fu20_l_l_2", "Fu25_l_l_2", "Fu15_l_2", "Fu20_l_2",
+            "Fu25_l_2", "Fu15_2", "Fu20_2", "Fu25_2"))
+
+```
+
+```{r}
+## Initial models =======================================================================
+
+library(plm)
+
+m_panels <- c(
+  'TOTFERRT ~ edu_index_l_l + health_index_l_l + GDPindex_l_l + FAM_l_l +
+  uY15_l_l + uY20_l_l + uY25_l_l + edu_index_l + health_index_l + GDPindex_l + FAM_l +
+  uY15_l + uY20_l + uY25_l + edu_index + health_index + GDPindex + FAM + uY15 + uY20 +
+  uY25',
+  'TOTFERRT ~ edu_index_l_l + health_index_l_l + GDPindex_l_l + FAM_l_l + edu_index_l +
+  health_index_l + GDPindex_l + FAM_l + edu_index + health_index + GDPindex + FAM'
+) %>% 
+  lapply(function(formula) {
+    pooling <- plm(eval(formula), data = dat_plm, model = "pooling")
+    within <- plm(eval(formula), data = dat_plm, model = "within")
+    random <- plm(eval(formula), data = dat_plm, model = "random")
+    
+    list(
+      tests = c(
+        pooltest(pooling, within)$p.value,
+        phtest(within, random)$p.value,
+        plm::r.squared(within, dfcor = T)),
+      model = within,
+      OLS = formula %>% 
+  str_replace_all('\\~', ',') %>% 
+  str_replace_all('\\+', ',') %>% 
+  str_split(',') %>% 
+  .[[1]] %>% 
+  trimws() %>% 
+  {c(., 'geo')} %>% 
+  {select(dat_plm, .)} %>% 
+  na.omit() %>% 
+  group_by(geo) %>% 
+  summarise_all(.funs = function(x) mean(x)) %>% 
+  merge(
+    plm::fixef(within) %>% 
+      {tibble(geo = names(.), a = .)}
+  ) %>% 
+  mutate(
+    TOTFERRT = TOTFERRT - a
+  ) %>% 
+  lm(formula = formula) 
+    )
+  })
+
+```
+
+```{r fig.cap="Panel models on the total fertility rates"}
+### Plot coefficients ###################################################################
+
+m_panels %>% 
+  lapply(function(output) {
+    output$model %>% broom::tidy(conf.int = T) %>% 
+      rownames_to_column()
+  }) %>% 
+  reduce(rbind) %>% 
+  mutate(
+    rowname = paste0("Model ", as.roman(cumsum(rowname == 1)), "."),
+    term = f.clean_names(term, Tosparse = T),
+    term = gsub("_2", "^2", term),
+    term = gsub("_l_l", '["t = -2"]', term),
+    term = gsub("_l", '["t = -1"]', term),
+  ) %>% 
+  ggplot() +
+  aes(estimate, term, color = p.value <= .05) +
+  geom_vline(xintercept = 0, color = "gray4") +
+  geom_point() +
+  geom_pointrange(aes(xmin = conf.low, xmax = conf.high)) +
+  facet_wrap(~rowname, nrow = 1) +
+  labs(x = "Estimated coefficient", y = "Term",
+       color = "Corresponding p-value \u2264 5%") +
+  scale_color_viridis_d(option = "magma", begin = .2, end = .7) +
+  scale_y_discrete(labels=scales::parse_format()) +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "horizontal"
+  )
+
+```
+
+```{r}
+### Model descriptions ##################################################################
+
+m_panels %>% 
+  lapply(function(output) {
+    c(output$tests, nrow(augment(output$model)))
+  }) %>% 
+  reduce(rbind) %>% 
+  t() %>% 
+  data.frame() %>% 
+  mutate_all(function(x) c(scales::percent(x[1:3], accuracy = .01), 
+                           as.character(x[4]))) %>% 
+  {set_names(., paste0("Model ", as.roman(1:ncol(.)), ".")) } %>% 
+  mutate(
+    Indicator = c("Pooltest", "Phtest", "Adjusted $R^2$", "Observations")
+  ) %>% 
+  select(Indicator, everything()) %>% 
+  knitr::kable(caption = "Models", align = c("l", "c", "c", "c"))
+
+```
+
+In the following, I perform lasso variable selection on these model frameworks to find the most relevant effects.
+
+## Framework I: with unemployment
+
+As repeatedly mentioned in the previous section, including unemployment statistics in the regression analysis drastically reduces the number of complete observations. Moreover, there is a good reason to believe that this selection method is not random, and omitting the incomplete data points may cause bias in the results. Figure 10 shows the number of complete observations by territorial units related to the two frameworks. 
+
+```{r fig.cap = "Number of complete observations by countries when the model includes or excludes unemployment statistics", fig.height=3.6}
+theme_update(legend.direction = 'horizontal', legend.position = 'bottom')
+
+ggpubr::ggarrange(
+  dat_plm %>% 
+    na.omit() %>% 
+    group_by(geo) %>% 
+    summarise(
+      values = n()
+    ) %>% 
+    plot_NUTS2(all.x = T) +
+    scale_fill_viridis_b(option = "magma", direction = -1, begin = .2,
+                         na.value = "white") +
+    ggtitle('Including'),
+  dat_plm %>% 
+    select(!starts_with('u') & !starts_with('Fu')) %>% 
+    na.omit() %>% 
+    group_by(geo) %>% 
+    summarise(
+      values = n()
+    ) %>% 
+    plot_NUTS2(all.x = T) +
+    scale_fill_viridis_b(option = "magma", direction = -1, begin = .2,
+                         na.value = "white") +
+    ggtitle('Excluding'),
+  common.legend = T
+) 
+```
+
+Figure 10 reveals that there are unbalances among the regions concerning their representation in the dataset. A prominent amount of incomplete and thus unusable observations concerns the Central European region and the UK. In this paper, I do not impute these missing values, and therefore, the limited generalizability of the results is taken into account.
+
+To measure the bias, I calculate the mean of the given variables in the total sample (including incomplete observations), and the sample that is used in this framework (excluding incomplete observations). The result is reported in table 5. The table describes that the health index and income index are higher, while the family benefit is lower in the used sample compared to the dataset containing the incomplete observations as well.
+
+
+```{r}
+# Framework I. ==========================================================================
+
+## Bias of framework ####################################################################
+
+names(dat_plm) %>% 
+  { ifelse(
+    . %in% c("geo", "time") | str_detect(., "_l") | str_detect(., "_2") |
+      str_detect(., 'Fu')
+    , NA, .
+  )} %>% 
+  na.omit() %>% 
+  lapply(function(variable){
+    x <- pull(dat_plm, variable) %>% na.omit()
+    y <- pull(na.omit(dat_plm), variable)
+    tibble(
+      Variable = f.clean_names(variable),
+      'Mean in total sample' = mean(x),
+      'Mean in used sample' = mean(y),
+      'Number of observations in the total sample' = length(x)
+    )
+  }
+  ) %>% reduce(rbind) %>% 
+  knitr::kable(caption = 
+                 'Comparison of average values of the variables for incomplete 
+               and complete observations (Framework I)', digits = 4, 
+               align = c('l', 'c', 'c', 'c', 'c'))
+
+```
+
+### Methodology of model estimating
+
+As described above, an optimal statistical tool for a high-dimensional dataset is the lasso regression. From mathematical aspect lasso regression means to add a $\lambda\sum_{j = 1}^{p}|\beta_{j}|$ term to the target function of regression \cite{james2013}. Intuitively, with this additional term, the value of the target function is lower (which has to be minimized), if more parameters are equal to zero, but the prediction error does not decrease significantly.
+
+Lasso regression has a hyperparameter $\lambda$. Setting its value to zero leads to the unmodified OLS model. In contrast, a lasso regression with $\lambda = 1$ would lead to an empty model. Finding the optimal $\lambda$ hyperparameter requires estimating the model with different parameters. In each case, the model contains a different number of variables.  To determine the optimal value of $\lambda$, leave-one-out cross-validation is performed with 10 folds, then the model having the lowest mean squared error on the validation set is chosen. This process is visualized in figure 11.
+
+
+```{r}
+### Run lasso regression ################################################################
+
+library(glmnet)
+
+y <- na.omit(dat_plm)$TOTFERRT
+X <- model.matrix(TOTFERRT ~ ., data = select(na.omit(dat_plm), -time))
+LASSO <- cv.glmnet(X, y)
+
+```
+
+```{r fig.cap = 'Performance of lasso regression models with different parameters', fig.height=3}
+tidy(LASSO) %>%
+  ggplot() + 
+  aes(log(lambda), ymin = conf.low*1000, ymax = conf.high*1000) +
+  geom_line(aes(log(lambda), estimate*1000, color = "Mean-Squared Error")) +
+  geom_step(aes(y = nzero, color = "Number of used explanatory variables"), 
+            size = 1) +
+  geom_ribbon(alpha = .4) + 
+  geom_hline(yintercept = 0, size = 1) +
+  geom_vline(aes(xintercept = log(LASSO$lambda.1se), linetype = "Best performing model"), 
+             color = 'black') +
+  scale_y_continuous(
+    name = "Number of used explanatory \n variables",
+    sec.axis = sec_axis( trans=~./1000, name = "Mean-Squared Error")
+  ) +
+  labs(y = "Mean-Squared Error", x = "Log(\u03BB)", color = NULL, linetype = NULL) +
+  scale_linetype_manual(values = c(2)) +
+  theme(legend.position = "bottom", legend.direction = "horizontal")
+
+```
+
+It is important to note that the above-described algorithm eliminated the insignificant individual intercept terms from the model. To adjust this property, I reestimate the within model including all the individual intercept terms and predictor variables from the best-performing lasso regression model.
+
+In addition, the difference in the measurement of the variables causes complexity in interpretation. Interpreting the direct effect of a predictor is simple, but the coefficients are not sufficient to describe the importance of the variables, because they are measured on different scales (one percentage point change in the family benefit-to-GDP ratio would be extreme, but not as outstanding as one percentage point change in the youth unemployment rate). To manage this, I reestimate the model with standardized variables. The benefit of this model is that the explained variance of the regression model can be decomposed with it:
+
+
+\begin{align}
+\text{R}^2 = \sum_{j=1}^{p} r_j \times \beta_{standardized,j}
+\end{align}
+
+Based on equation 4, the coefficient multiplied by the linear correlation coefficient ($r$) can be interpreted as the contribution to the explained variance. The result of this and the above-mentioned computations are reported in figure 12.
+
+
+```{r}
+lasso_coefs <- capture.output(
+  coef(LASSO, LASSO$lambda.1se)
+) %>% 
+  .[-(1:2)] %>% 
+  {tibble(x = .)} %>% 
+  mutate(term = gsub(" .*", "", x), coef = gsub(".* ", "", x)) %>% 
+  select(-x) %>% 
+  filter(!str_detect(term, "geo") & coef != "" & term != "(Intercept)")
+
+```
+
+```{r}
+m_panels2 <- paste("TOTFERRT ~", paste(lasso_coefs$term, collapse = " + ")) %>% 
+  lapply(function(formula) {
+    pooling <- plm(eval(formula), data = dat_plm, model = "pooling")
+    within <- plm(eval(formula), data = dat_plm, model = "within")
+    random <- plm(eval(formula), data = dat_plm, model = "random")
+    list(
+      tests = c(
+        pooltest(pooling, within)$p.value,
+        phtest(within, random)$p.value,
+        plm::r.squared(within, dfcor = T)),
+      model = within,
+      OLS = formula %>% 
+  str_replace_all('\\~', ',') %>% 
+  str_replace_all('\\+', ',') %>% 
+  str_split(',') %>% 
+  .[[1]] %>% 
+  trimws() %>% 
+  {c(., 'geo')} %>% 
+  {select(dat_plm, .)} %>% 
+  na.omit() %>% 
+  group_by(geo) %>% 
+  summarise_all(.funs = function(x) mean(x)) %>% 
+  merge(
+    plm::fixef(within) %>% 
+      {tibble(geo = names(.), a = .)}
+  ) %>% 
+  mutate(
+    TOTFERRT = TOTFERRT - a
+  ) %>% 
+  lm(formula = formula) 
+    )
+  }
+  )
+
+```
+
+```{r eval = F}
+m_panels2 %>% 
+  lapply(function(output) {
+    output$tests
+  }) 
+
+```
+
+```{r}
+standard_beta <- m_panels2[[1]]$OLS %>% 
+  QuantPsyc::lm.beta() %>% 
+  {tibble(term = names(.), beta = .)} %>% 
+  filter(!str_detect(term, "geo"))
+
+standard_beta <- augment(m_panels2[[1]]$OLS) %>% 
+  select(TOTFERRT:.fitted) %>% 
+  select(-.fitted) %>% 
+  cor() %>% 
+  data.frame() %>% 
+  select(1) %>% 
+  rownames_to_column() %>% 
+  rename(term = rowname) %>% 
+  merge(standard_beta) %>% 
+  mutate(explain = abs(TOTFERRT*beta)) %>% 
+  select(term, cor = TOTFERRT, standard_beta = beta, explain)
+
+```
+
+```{r fig.height=8, fig.cap="Estimated coefficient of the fixed panel model controlling for youth unemployment indicators"}
+lasso_coefs %>% 
+  rename(lasso = coef) %>% 
+  merge(tidy(m_panels2[[1]]$OLS, conf.int = T)) %>% 
+  merge(standard_beta) %>% 
+  mutate_at(-1, function(x) as.numeric(x)) %>% 
+  pivot_longer(c(lasso:estimate, cor:explain)) %>% 
+  mutate(
+    conf.low = ifelse(name != "estimate", NA, conf.low),
+    conf.high = ifelse(name != "estimate", NA, conf.high),
+    lag = ifelse(str_detect(term, "_l"), 
+                 ifelse(str_detect(term, "_l_l"), 2, 1), 0),
+    bar = ifelse(name %in% c("cor", "explain"), value, NA),
+    value = ifelse(!(name %in% c("cor", "explain")), value, NA),
+    term = f.clean_names(term, Tosparse = T),
+    term = gsub("_2", "^2", term),
+    term = gsub("_l_l", '["t = -2"]', term),
+    term = gsub("_l", '["t = -1"]', term),
+    name = case_when(
+      name == "cor" ~ 'Correlation coefficient',
+      name == "estimate" ~ 'Coefficient in OLS',
+      name == "lasso" ~ 'Coefficient in \nlasso regression',
+      name == "standard_beta" ~ 'Standardized coefficient',
+      name == "explain" ~ 'Contribution to R-squared'
+    ),
+    name = factor(
+      name, levels = c(
+        'Correlation coefficient',
+        'Coefficient in \nlasso regression',
+        'Coefficient in OLS',
+        'Standardized coefficient',
+        'Contribution to R-squared'
+      )
+    ),
+  ) %>% 
+  {  
+    ggplot(.) +
+      geom_vline(xintercept = 0) +
+      geom_point(aes(value, term, fill = factor(lag)), size = 3) +
+      geom_col(aes(bar, term, fill = factor(lag)), color = "black") +
+      scale_fill_viridis_d(option = "magma", begin = .3, end = .7) +
+      scale_y_discrete(labels=scales::parse_format(), limits = rev) +
+      facet_wrap(~ name, scales = "free_x") +
+      labs(x = NULL, y = "Term", fill = "Lag") +
+      theme(legend.position = "bottom", legend.direction = "horizontal")
+  }
+
+```
+
+### Interpreting the results
+
+The high contribution of income index and family benefit to the explained variance revealed by figure 12. Both of them seem to have a positive effect on fertility. Increasing income per capita leads to higher total fertility rate based on the model parameters (positive coefficient correspond to each lagged variable). In contrast, coefficients related to the different lagged values of family support indicate a complex mechanism: family support has a high instantaneous effect on fertility, but the lagged negative effect implies that this birth-surplus disappears in the following years.
+
+Based on the results the answer to our research question is that in the developed world (1) *income is far the most important component of human development influencing fertility (highest contribution to* $\text{R}^2$) and (2) *family support also has a significant instantaneous effect on childbearing willingness, but it seems weaker on the long run*. 
+
+Youth unemployment rates among 25-29 year-olds have a negative effect on fertility, but its total effect is lagged. Among 15-19 year-olds this effect is different. In their case, the increase in unemployment causes an instantaneous increase in fertility. But in the case of a permanent increase in unemployment, this increase disappears (ceteris paribus). Extending the model with the interactions of youth unemployment and family benefit was truly beneficial comparing the standardized effect of the unemployment rates and the interactions. 
+
+Education index is also detected as a significant explanation of the variance of fertility, but its interpretation is more complex. The lagged quadratic terms are represented in the model with negative coefficients. This reflects that the higher education index leads to lower fertility, and this effect is stronger in the case of those regions, where the education index is higher. This confirms the former findings in the literature that highly educated women tend to have less children \cite{martin1995women}, but recent research found empirical evidence, that "higher educated German women, who already decided to have a child despite their high opportunity costs are more family oriented" \cite{konig2011higher}.
+
+## Framework II: without unemployment
+
+I continue my study reporting the results from the model excludes unemployment statistics. This framework omits significantly fewer data points, so the probability of contra selection-caused bias is reduced. Table 6 describes the average difference comparing the used sample and the values from the incomplete observations.
+
+The methodology of the model estimation is equivalent to the one described in the first model framework. The results are presented in figure 15. The $\text{H}_0$ of the Chow test ($p = 0.00%$) and the Hausman test ($p = 0.00%$) are rejected, so fixed effect model is adequate. The $\text{R}^2$ of this model is 14.85%^[The heterogenity of the contries containing complete observation is higher in this setup, that is comparing the $R^2$ of the two frameworks is not suggested.].
+
+```{r}
+dat_plm <- dat_plm %>% 
+  select(!starts_with("uY") &! starts_with("Fu"))
+
+```
+
+```{r}
+names(dat_plm) %>% 
+  {ifelse(
+    . %in% c("geo", "time") | str_detect(., "_l") | str_detect(., "_2"), NA, .
+  )} %>% 
+  na.omit() %>% 
+  lapply(function(variable){
+    x <- pull(dat_plm, variable) %>% na.omit()
+    y <- pull(na.omit(dat_plm), variable)
+    tibble(
+      Variable = f.clean_names(variable),
+      'Mean in total sample' = mean(x),
+      'Mean in used sample' = mean(y),
+      'Number of observations in total sample' = length(x)
+    )
+  }
+  ) %>% reduce(rbind) %>% 
+  knitr::kable(caption = 'Comparison of average values of the variables for incomplete and complete observations (Framework II)', digits = 4, 
+               align = c('l', 'c', 'c', 'c'))
+
+```
+
+```{r}
+LASSO <- cv.glmnet(model.matrix(TOTFERRT ~ ., data = select(na.omit(dat_plm), -time)), 
+                   na.omit(dat_plm)$TOTFERRT)
+
+```
+
+```{r}
+lasso_coefs <- capture.output(
+  coef(LASSO, LASSO$lambda.1se)
+) %>% 
+  .[-(1:2)] %>% 
+  {tibble(x = .)} %>% 
+  mutate(term = gsub(" .*", "", x), coef = gsub(".* ", "", x)) %>% 
+  select(-x) %>% 
+  filter(!str_detect(term, "geo") & coef != "" & term != "(Intercept)")
+
+```
+
+```{r}
+m_panels2 <- paste("TOTFERRT ~", paste(lasso_coefs$term, collapse = " + ")) %>% 
+  lapply(function(formula) {
+    pooling <- plm(eval(formula), data = dat_plm, model = "pooling")
+    within <- plm(eval(formula), data = dat_plm, model = "within")
+    random <- plm(eval(formula), data = dat_plm, model = "random")
+    list(
+      tests = c(
+        pooltest(pooling, within)$p.value,
+        phtest(within, random)$p.value,
+        plm::r.squared(within, dfcor = T)),
+      model = within,
+      OLS = formula %>% 
+  str_replace_all('\\~', ',') %>% 
+  str_replace_all('\\+', ',') %>% 
+  str_split(',') %>% 
+  .[[1]] %>% 
+  trimws() %>% 
+  {c(., 'geo')} %>% 
+  {select(dat_plm, .)} %>% 
+  na.omit() %>% 
+  group_by(geo) %>% 
+  summarise_all(.funs = function(x) mean(x)) %>% 
+  merge(
+    plm::fixef(within) %>% 
+      {tibble(geo = names(.), a = .)}
+  ) %>% 
+  mutate(
+    TOTFERRT = TOTFERRT - a
+  ) %>% 
+  lm(formula = formula) 
+    )
+  }
+  )
+
+```
+
+```{r eval = F}
+m_panels2 %>% 
+  lapply(function(output) {
+    output$tests
+  }) 
+
+```
+
+```{r}
+standard_beta <- m_panels2[[1]]$OLS %>% 
+  QuantPsyc::lm.beta() %>% 
+  {tibble(term = names(.), beta = .)} %>% 
+  filter(!str_detect(term, "geo"))
+
+standard_beta <- augment(m_panels2[[1]]$OLS) %>% 
+  select(TOTFERRT:.fitted) %>% 
+  select(-.fitted) %>% 
+  cor() %>% 
+  data.frame() %>% 
+  select(1) %>% 
+  rownames_to_column() %>% 
+  rename(term = rowname) %>% 
+  merge(standard_beta) %>% 
+  mutate(explain = abs(TOTFERRT*beta)) %>% 
+  select(term, cor = TOTFERRT, standard_beta = beta, explain)
+
+```
+
+```{r fig.height=6, fig.cap="Estimated coefficient of the fixed panel model omitting youth unemployment indicators"}
+lasso_coefs %>% 
+  rename(lasso = coef) %>% 
+  merge(tidy(m_panels2[[1]]$OLS, conf.int = T)) %>% 
+  merge(standard_beta) %>% 
+  mutate_at(-1, function(x) as.numeric(x)) %>% 
+  pivot_longer(c(lasso:estimate, cor:explain)) %>% 
+  mutate(
+    conf.low = ifelse(name != "estimate", NA, conf.low),
+    conf.high = ifelse(name != "estimate", NA, conf.high),
+    lag = ifelse(str_detect(term, "_l"), 
+                 ifelse(str_detect(term, "_l_l"), 2, 1), 0),
+    bar = ifelse(name %in% c("cor", "explain"), value, NA),
+    value = ifelse(!(name %in% c("cor", "explain")), value, NA),
+    term = f.clean_names(term, Tosparse = T),
+    term = gsub("_2", "^2", term),
+    term = gsub("_l_l", '["t = -2"]', term),
+    term = gsub("_l", '["t = -1"]', term),
+    name = case_when(
+      name == "cor" ~ 'Correlation coefficient',
+      name == "estimate" ~ 'Coefficient in OLS',
+      name == "lasso" ~ 'Coefficient in lasso regression',
+      name == "standard_beta" ~ 'Standardized coefficient',
+      name == "explain" ~ 'Contribution to R-squared'
+    ),
+    name = factor(
+      name, levels = c(
+        'Correlation coefficient',
+        'Coefficient in lasso regression',
+        'Coefficient in OLS',
+        'Standardized coefficient',
+        'Contribution to R-squared'
+      )
+    )
+  ) %>% 
+  filter(name != 'Correlation coefficient') %>% 
+  {  
+    ggplot(.) +
+      geom_vline(xintercept = 0) +
+      geom_point(aes(value, term, fill = factor(lag)), size = 3) +
+      geom_col(aes(bar, term, fill = factor(lag)), color = "black") +
+      scale_fill_viridis_d(option = "magma", begin = .3, end = .7) +
+      scale_y_discrete(labels=scales::parse_format(), limits = rev) +
+      facet_wrap(~ name, scales = "free_x") +
+      labs(x = NULL, y = "Term", fill = "Lag") +
+      theme(legend.position = "bottom", legend.direction = "horizontal")
+  }
+
+```
+
+### Interpreting the results
+
+Figure 13 shows that the outstandingly high contribution to the $\text{R}^2$ of the income index did not change, so the answer for my first research question is robust to the framework: *income index explains significantly more of the variance of the fertility than the other components of human development, and it has a positive effect on childbearing willingness*. 
+
+The estimated effect of family benefit differs in this framework compared to the one including unemployment statistics (and excluding observations where youth unemployment is not available). The new observations come from Central-European regions and the estimated structure of the effect of family benefit became significantly different. The reversal effect in this framework is close to the instantaneous effect of the family spending. This leads to the interpretation that family support has only an instantaneous impact on fertility, but on the long run it can not significantly influence the fertility.
+
+The main difference between the results reported by the two frameworks is that the health index is signed as a significant variable in the second one. Since all of its transformed terms has a negative coefficient, a higher health index leads to lower fertility. The frequently mentioned reason for this is the changing lifestyle and women in the EU are having their first child later. One possible explanation why health index was not relevant in the previous framework is that the share of observations from Central-European countries are much higher in this model (due to the lack of unemployment statistics from the early 2000s). Extension of average childbearing age led to failing fertility rates in this area^[Berde, É. and Németh, P. (2014). Az alacsony magyarországi termékenység új megközelítésben. Statisztikai Szemle, 92(3):253–274.]. But many articles suggest that an adjusted TFR should be considered^[Berde, É. and Németh, P. (2014). Az alacsony magyarországi termékenység új megközelítésben. Statisztikai Szemle, 92(3):253–274.], because the drastically low fertility during the time of this mechanism. However, these indices are currently not available for regional datasets, but this could be a possible further research direction.

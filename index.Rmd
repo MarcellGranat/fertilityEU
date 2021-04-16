@@ -1,0 +1,86 @@
+---
+title: "The impact of human development on fertility rates"
+subtitle: "An empirical analysis of fertility rates amoung the regions of Europe"
+author: "Marcell P. Granát"
+output: bookdown::gitbook
+site: bookdown::bookdown_site
+favicon: "logo.ico"
+---
+
+# Preface
+
+```{r setup, include=FALSE, warning=F}
+knitr::opts_chunk$set(echo = F, comment = "", warning = F, message = F, cache = F, dev = "svg", error = T, fig.align = 'center', fig.width = 7)
+```
+
+```{r}
+knitr::include_graphics('corvinustdk.png')
+```
+
+
+***
+
+*I would like to thank my supervisor*  ***Zoltán Madari*** *for his consistent support and guidance during the running of this project.*
+
+***
+
+
+```{r packages}
+# Packages ------------------------------------------------------------------------------ 
+
+library(tidyverse)
+library(patchwork)
+library(knitr)
+library(broom)
+library(eurostat)
+
+```
+
+```{r}
+update_geom_defaults("point", list(fill = "#B1339E", 
+                                   shape = 21, 
+                                   color = "black", 
+                                   size = 1.4))
+update_geom_defaults("line", 
+                     list(color = "midnightblue", size = 1.4))
+
+update_geom_defaults("smooth", list(color = "red4", size = 1.4))
+
+update_geom_defaults("density", 
+                     list(color = "midnightblue", fill =  "midnightblue", alpha = .3, 
+                          size = 1.4))
+
+extrafont::loadfonts(device="win")
+
+theme_set(theme_minimal() + theme(
+  legend.direction = "vertical",
+  text = element_text(family = "Impact"),
+  plot.caption = element_text(family = "serif"),
+  legend.key=element_blank()
+))
+```
+
+
+```{css, echo=FALSE}
+p {
+text-align: justify;
+}
+.author {
+  font-size: 20px;
+  text-align: center;
+  color: #4a4a4a
+} 
+.title {
+  text-align: center;
+}
+.subtitle {
+  font-size: 7px;
+  text-align: center;
+  color: #B6B6B6
+}
+```
+
+## Abstract
+
+If one attends to the extremely large literature of demographic trends in the developed world, then the uncertainty about the effect of economic and human development factors on the fertility rate cannot be covered for a long time. Several empirical studies argue for the existence of the J-shaped effect of the development, but many papers come up with statements to the opposite. The goal of this paper is to contribute to the literature with an advanced panel econometric model based on regional observations.  Beyond the human development factors (living standard, education and health) I extend my analysis by using youth unemployment and family benefit indicators as dependent variables. Important to note that statistics about unemployment are available only for a critically short period in the case of many regions. To manage this highly unbalanced nature of the dataset – while not rejecting the possibility to control for youth unemployment – I estimate the model with two different modeling frames: one without youth unemployment and another one with it. 
+As a result, the paper confirms the empirical evidence that increasing human development in developed countries has a positive effect on total fertility rates, and income is the most important component. This finding is robust to the mentioned two frameworks. In contrast, the research come up only with week evidence for the significant effect of expenditure on family support on total fertility rates on the long run.

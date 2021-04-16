@@ -1,0 +1,11 @@
+# Conclusion {#Chapter-6}
+
+```{css, echo=FALSE}
+p {
+  text-align: justify;
+}
+```
+
+This paper focused on the effect of two key factors on fertility rates in Europe: human development and expenditures on family support. To quantify the relationships, econometric modeling on regional dataset were performed. This requires to generate or estimate the human development indices for regional level. From statistical aspect the key issue is the trade of between limited complete observations or omitting possibly important explanatory variables. This is due to the lack of data about youth unemployment. To manage this a I set up two model frameworks: one including unemployment statistics and one excluding it. Based on theoretical considerations and the previously performed analysis the design-matrix was extended with lagged variables (duration of pregnancy), quadratic terms (Theory of "J-shaped" effect) and interactions between youth unemployment and family benefit (based on the previously performed regression tree). This lead to a high-diemansional dataset, so lasso-based feature selection was the bases of the reported longitudinal econometric models.
+
+As a result, the paper confirms the *empirical evidence that increasing human development in developed countries has a positive effect on total fertility rates, and income is the most important component*. This finding is robust to the framework. In contrast, the research come up *only with week evidence for the significant effect of expenditure on family on total fertility rates*. 

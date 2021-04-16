@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Model building | The impact of human development on fertility rates</title>
+  <meta name="description" content="Model building | The impact of human development on fertility rates" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Model building | The impact of human development on fertility rates" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Model building | The impact of human development on fertility rates" />
+  
+  
+  
+
+<meta name="author" content="Marcell P. Granát" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  <link rel="shortcut icon" href="logo.ico" type="image/x-icon" />
+<link rel="prev" href="Chapter-4.html"/>
+<link rel="next" href="Chapter-6.html"/>
+<script src="libs/header-attrs-2.7/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<img src="logo.png" width="300" height="300">
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#abstract"><i class="fa fa-check"></i>Abstract</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Chapter-1.html"><a href="Chapter-1.html"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="chapter" data-level="" data-path="Chapter-2.html"><a href="Chapter-2.html"><i class="fa fa-check"></i>Theoretical consideration</a></li>
+<li class="chapter" data-level="" data-path="Chapter-3.html"><a href="Chapter-3.html"><i class="fa fa-check"></i>Data</a>
+<ul>
+<li class="chapter" data-level="" data-path="Chapter-3.html"><a href="Chapter-3.html#human-development"><i class="fa fa-check"></i>Human Development</a>
+<ul>
+<li class="chapter" data-level="" data-path="Chapter-3.html"><a href="Chapter-3.html#a-decent-standard-of-living"><i class="fa fa-check"></i>A decent standard of living</a></li>
+<li class="chapter" data-level="" data-path="Chapter-3.html"><a href="Chapter-3.html#long-and-healthy-life"><i class="fa fa-check"></i>Long and healthy life</a></li>
+<li class="chapter" data-level="" data-path="Chapter-3.html"><a href="Chapter-3.html#knowledge"><i class="fa fa-check"></i>Knowledge</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Chapter-3.html"><a href="Chapter-3.html#total-fertility-rates-family-benefit-and-unemployment-statistics"><i class="fa fa-check"></i>Total fertility rates, family benefit and unemployment statistics</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Chapter-4.html"><a href="Chapter-4.html"><i class="fa fa-check"></i>Explore the data</a>
+<ul>
+<li class="chapter" data-level="" data-path="Chapter-4.html"><a href="Chapter-4.html#pairwise-comparison"><i class="fa fa-check"></i>Pairwise comparison</a></li>
+<li class="chapter" data-level="" data-path="Chapter-4.html"><a href="Chapter-4.html#regression-tree"><i class="fa fa-check"></i>Regression tree</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Chapter-5.html"><a href="Chapter-5.html"><i class="fa fa-check"></i>Model building</a>
+<ul>
+<li class="chapter" data-level="" data-path="Chapter-5.html"><a href="Chapter-5.html#framework-i-with-unemployment"><i class="fa fa-check"></i>Framework I: with unemployment</a>
+<ul>
+<li class="chapter" data-level="" data-path="Chapter-5.html"><a href="Chapter-5.html#methodology-of-model-estimating"><i class="fa fa-check"></i>Methodology of model estimating</a></li>
+<li class="chapter" data-level="" data-path="Chapter-5.html"><a href="Chapter-5.html#interpreting-the-results"><i class="fa fa-check"></i>Interpreting the results</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Chapter-5.html"><a href="Chapter-5.html#framework-ii-without-unemployment"><i class="fa fa-check"></i>Framework II: without unemployment</a>
+<ul>
+<li class="chapter" data-level="" data-path="Chapter-5.html"><a href="Chapter-5.html#interpreting-the-results-1"><i class="fa fa-check"></i>Interpreting the results</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Chapter-6.html"><a href="Chapter-6.html"><i class="fa fa-check"></i>Conclusion</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The impact of human development on fertility rates</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="Chapter-5" class="section level1">
+<h1>Model building</h1>
+<style type="text/css">
+p {
+  text-align: justify;
+}
+</style>
+<p>Following the findings in the previous chapters, I highlight the main ideas for the model building:
+(1) Youth unemployment is a significant factor in explaining the variance of fertility, but including it in the model reduces the number of complete observations, so I report one model with the youth unemployment included and one without that. (2) Extending the design matrix with the interactions of youth unemployment rates and fertility is justified. (This extension only concerns the framework which contains unemployment).</p>
+<p>Additionally, concerning the nature of fertility (duration of pregnancy) and childbearing decisions (parents may interpolate their expected socio-economic situation from their past) extending the model with the lagged value of the predictors is also reasonable. This raises the issue that the model contains too many predictors and variable selection becomes difficult. I manage variable selection based on lasso selection.</p>
+<p>The first step to estimate panel regression models is to identify the appropriate model type. Choosing among the pooled, within and random-effects model requires performing the Chow test and Hausman test. The null hypothesis in the former one is that whether a significant difference among the individual intercepts exists, and the test is performed based on an F-test. If the given <span class="math inline">\(\text{H}_{0}\)</span> cannot be rejected at any standard significance level, estimating a pooled model is suggested. In other cases, the outcome depends on the result of the Hausman test. The Hausman test (or Durbin-Wu-Hausman test) is more complex from mathematical aspects, but the interpretation is simple: if the given <span class="math inline">\(\text{H}_{0}\)</span> cannot be rejected, the within (fixed-effects) model is not as efficient as the random-effects, and estimating random-effects model is suggested. If the null hypothesis is rejected at any standard significance level, the fixed-effects model will be suitable .</p>
+<p>The optimal model may differ if the set of predictors change, but as a starting point, I estimate the one-one simplest model for the two mentioned model frameworks (including unemployment statistics or not). These models do not contain interaction but lagged effect and quadratic terms are included. The performed tests show that the fixed-effects model is optimal (see the results in Table 5), and the estimated coefficients from the fixed-effects models are presented in figure 10.</p>
+<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-33"></span>
+<img src="my-book_files/figure-html/unnamed-chunk-33-1.svg" alt="Panel models on the total fertility rates" width="672" />
+<p class="caption">
+Figure 10: Panel models on the total fertility rates
+</p>
+</div>
+<table>
+<caption><span id="tab:unnamed-chunk-34">Table 4: </span>Models</caption>
+<thead>
+<tr class="header">
+<th align="left">Indicator</th>
+<th align="center">Model I.</th>
+<th align="center">Model II.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Pooltest</td>
+<td align="center">0.00%</td>
+<td align="center">0.00%</td>
+</tr>
+<tr class="even">
+<td align="left">Phtest</td>
+<td align="center">0.00%</td>
+<td align="center">0.00%</td>
+</tr>
+<tr class="odd">
+<td align="left">Adjusted <span class="math inline">\(R^2\)</span></td>
+<td align="center">20.20%</td>
+<td align="center">29.23%</td>
+</tr>
+<tr class="even">
+<td align="left">Observations</td>
+<td align="center">699</td>
+<td align="center">3257</td>
+</tr>
+</tbody>
+</table>
+<p>In the following, I perform lasso variable selection on these model frameworks to find the most relevant effects.</p>
+<div id="framework-i-with-unemployment" class="section level2">
+<h2>Framework I: with unemployment</h2>
+<p>As repeatedly mentioned in the previous section, including unemployment statistics in the regression analysis drastically reduces the number of complete observations. Moreover, there is a good reason to believe that this selection method is not random, and omitting the incomplete data points may cause bias in the results. Figure 10 shows the number of complete observations by territorial units related to the two frameworks.</p>
+<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-35"></span>
+<img src="my-book_files/figure-html/unnamed-chunk-35-1.svg" alt="Number of complete observations by countries when the model includes or excludes unemployment statistics" width="672" />
+<p class="caption">
+Figure 11: Number of complete observations by countries when the model includes or excludes unemployment statistics
+</p>
+</div>
+<p>Figure 10 reveals that there are unbalances among the regions concerning their representation in the dataset. A prominent amount of incomplete and thus unusable observations concerns the Central European region and the UK. In this paper, I do not impute these missing values, and therefore, the limited generalizability of the results is taken into account.</p>
+<p>To measure the bias, I calculate the mean of the given variables in the total sample (including incomplete observations), and the sample that is used in this framework (excluding incomplete observations). The result is reported in table 5. The table describes that the health index and income index are higher, while the family benefit is lower in the used sample compared to the dataset containing the incomplete observations as well.</p>
+<table>
+<caption><span id="tab:unnamed-chunk-36">Table 5: </span>Comparison of average values of the variables for incomplete
+and complete observations (Framework I)</caption>
+<colgroup>
+<col width="15%" />
+<col width="21%" />
+<col width="20%" />
+<col width="42%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Variable</th>
+<th align="center">Mean in total sample</th>
+<th align="center">Mean in used sample</th>
+<th align="center">Number of observations in the total sample</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">TFR</td>
+<td align="center">1.5575</td>
+<td align="center">1.4801</td>
+<td align="center">7249</td>
+</tr>
+<tr class="even">
+<td align="left">Education index</td>
+<td align="center">0.5159</td>
+<td align="center">0.5093</td>
+<td align="center">5373</td>
+</tr>
+<tr class="odd">
+<td align="left">Health index</td>
+<td align="center">0.9089</td>
+<td align="center">0.9375</td>
+<td align="center">6983</td>
+</tr>
+<tr class="even">
+<td align="left">Income index</td>
+<td align="center">0.8120</td>
+<td align="center">0.8298</td>
+<td align="center">4291</td>
+</tr>
+<tr class="odd">
+<td align="left">Family benefit</td>
+<td align="center">2.0759</td>
+<td align="center">1.6302</td>
+<td align="center">6155</td>
+</tr>
+<tr class="even">
+<td align="left">UR (15-19 y)</td>
+<td align="center">36.6887</td>
+<td align="center">44.4312</td>
+<td align="center">1713</td>
+</tr>
+<tr class="odd">
+<td align="left">UR (20-24 y)</td>
+<td align="center">24.3992</td>
+<td align="center">25.5202</td>
+<td align="center">2935</td>
+</tr>
+<tr class="even">
+<td align="left">UR (25-29 y)</td>
+<td align="center">17.0111</td>
+<td align="center">17.0333</td>
+<td align="center">2664</td>
+</tr>
+</tbody>
+</table>
+<div id="methodology-of-model-estimating" class="section level3">
+<h3>Methodology of model estimating</h3>
+<p>As described above, an optimal statistical tool for a high-dimensional dataset is the lasso regression. From mathematical aspect lasso regression means to add a <span class="math inline">\(\lambda\sum_{j = 1}^{p}|\beta_{j}|\)</span> term to the target function of regression . Intuitively, with this additional term, the value of the target function is lower (which has to be minimized), if more parameters are equal to zero, but the prediction error does not decrease significantly.</p>
+<p>Lasso regression has a hyperparameter <span class="math inline">\(\lambda\)</span>. Setting its value to zero leads to the unmodified OLS model. In contrast, a lasso regression with <span class="math inline">\(\lambda = 1\)</span> would lead to an empty model. Finding the optimal <span class="math inline">\(\lambda\)</span> hyperparameter requires estimating the model with different parameters. In each case, the model contains a different number of variables. To determine the optimal value of <span class="math inline">\(\lambda\)</span>, leave-one-out cross-validation is performed with 10 folds, then the model having the lowest mean squared error on the validation set is chosen. This process is visualized in figure 11.</p>
+<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-38"></span>
+<img src="my-book_files/figure-html/unnamed-chunk-38-1.svg" alt="Performance of lasso regression models with different parameters" width="672" />
+<p class="caption">
+Figure 12: Performance of lasso regression models with different parameters
+</p>
+</div>
+<p>It is important to note that the above-described algorithm eliminated the insignificant individual intercept terms from the model. To adjust this property, I reestimate the within model including all the individual intercept terms and predictor variables from the best-performing lasso regression model.</p>
+<p>In addition, the difference in the measurement of the variables causes complexity in interpretation. Interpreting the direct effect of a predictor is simple, but the coefficients are not sufficient to describe the importance of the variables, because they are measured on different scales (one percentage point change in the family benefit-to-GDP ratio would be extreme, but not as outstanding as one percentage point change in the youth unemployment rate). To manage this, I reestimate the model with standardized variables. The benefit of this model is that the explained variance of the regression model can be decomposed with it:</p>
+<p><span class="math display">\[\begin{align}
+\text{R}^2 = \sum_{j=1}^{p} r_j \times \beta_{standardized,j}
+\end{align}\]</span></p>
+<p>Based on equation 4, the coefficient multiplied by the linear correlation coefficient (<span class="math inline">\(r\)</span>) can be interpreted as the contribution to the explained variance. The result of this and the above-mentioned computations are reported in figure 12.</p>
+<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-43"></span>
+<img src="my-book_files/figure-html/unnamed-chunk-43-1.svg" alt="Estimated coefficient of the fixed panel model controlling for youth unemployment indicators" width="672" />
+<p class="caption">
+Figure 13: Estimated coefficient of the fixed panel model controlling for youth unemployment indicators
+</p>
+</div>
+</div>
+<div id="interpreting-the-results" class="section level3">
+<h3>Interpreting the results</h3>
+<p>The high contribution of income index and family benefit to the explained variance revealed by figure 12. Both of them seem to have a positive effect on fertility. Increasing income per capita leads to higher total fertility rate based on the model parameters (positive coefficient correspond to each lagged variable). In contrast, coefficients related to the different lagged values of family support indicate a complex mechanism: family support has a high instantaneous effect on fertility, but the lagged negative effect implies that this birth-surplus disappears in the following years.</p>
+<p>Based on the results the answer to our research question is that in the developed world (1) <em>income is far the most important component of human development influencing fertility (highest contribution to</em> <span class="math inline">\(\text{R}^2\)</span>) and (2) <em>family support also has a significant instantaneous effect on childbearing willingness, but it seems weaker on the long run</em>.</p>
+<p>Youth unemployment rates among 25-29 year-olds have a negative effect on fertility, but its total effect is lagged. Among 15-19 year-olds this effect is different. In their case, the increase in unemployment causes an instantaneous increase in fertility. But in the case of a permanent increase in unemployment, this increase disappears (ceteris paribus). Extending the model with the interactions of youth unemployment and family benefit was truly beneficial comparing the standardized effect of the unemployment rates and the interactions.</p>
+<p>Education index is also detected as a significant explanation of the variance of fertility, but its interpretation is more complex. The lagged quadratic terms are represented in the model with negative coefficients. This reflects that the higher education index leads to lower fertility, and this effect is stronger in the case of those regions, where the education index is higher. This confirms the former findings in the literature that highly educated women tend to have less children , but recent research found empirical evidence, that “higher educated German women, who already decided to have a child despite their high opportunity costs are more family oriented” .</p>
+</div>
+</div>
+<div id="framework-ii-without-unemployment" class="section level2">
+<h2>Framework II: without unemployment</h2>
+<p>I continue my study reporting the results from the model excludes unemployment statistics. This framework omits significantly fewer data points, so the probability of contra selection-caused bias is reduced. Table 6 describes the average difference comparing the used sample and the values from the incomplete observations.</p>
+<p>The methodology of the model estimation is equivalent to the one described in the first model framework. The results are presented in figure 15. The <span class="math inline">\(\text{H}_0\)</span> of the Chow test (<span class="math inline">\(p = 0.00%\)</span>) and the Hausman test (<span class="math inline">\(p = 0.00%\)</span>) are rejected, so fixed effect model is adequate. The <span class="math inline">\(\text{R}^2\)</span> of this model is 14.85%<a href="#fn14" class="footnote-ref" id="fnref14"><sup>14</sup></a>.</p>
+<table>
+<caption><span id="tab:unnamed-chunk-45">Table 6: </span>Comparison of average values of the variables for incomplete and complete observations (Framework II)</caption>
+<colgroup>
+<col width="16%" />
+<col width="22%" />
+<col width="21%" />
+<col width="40%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Variable</th>
+<th align="center">Mean in total sample</th>
+<th align="center">Mean in used sample</th>
+<th align="center">Number of observations in total sample</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">TFR</td>
+<td align="center">1.5575</td>
+<td align="center">1.4935</td>
+<td align="center">7249</td>
+</tr>
+<tr class="even">
+<td align="left">Education index</td>
+<td align="center">0.5159</td>
+<td align="center">0.4976</td>
+<td align="center">5373</td>
+</tr>
+<tr class="odd">
+<td align="left">Health index</td>
+<td align="center">0.9089</td>
+<td align="center">0.9202</td>
+<td align="center">6983</td>
+</tr>
+<tr class="even">
+<td align="left">Income index</td>
+<td align="center">0.8120</td>
+<td align="center">0.8228</td>
+<td align="center">4291</td>
+</tr>
+<tr class="odd">
+<td align="left">Family benefit</td>
+<td align="center">2.0759</td>
+<td align="center">1.9699</td>
+<td align="center">6155</td>
+</tr>
+</tbody>
+</table>
+<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-51"></span>
+<img src="my-book_files/figure-html/unnamed-chunk-51-1.svg" alt="Estimated coefficient of the fixed panel model omitting youth unemployment indicators" width="672" />
+<p class="caption">
+Figure 14: Estimated coefficient of the fixed panel model omitting youth unemployment indicators
+</p>
+</div>
+<div id="interpreting-the-results-1" class="section level3">
+<h3>Interpreting the results</h3>
+<p>Figure 13 shows that the outstandingly high contribution to the <span class="math inline">\(\text{R}^2\)</span> of the income index did not change, so the answer for my first research question is robust to the framework: <em>income index explains significantly more of the variance of the fertility than the other components of human development, and it has a positive effect on childbearing willingness</em>.</p>
+<p>The estimated effect of family benefit differs in this framework compared to the one including unemployment statistics (and excluding observations where youth unemployment is not available). The new observations come from Central-European regions and the estimated structure of the effect of family benefit became significantly different. The reversal effect in this framework is close to the instantaneous effect of the family spending. This leads to the interpretation that family support has only an instantaneous impact on fertility, but on the long run it can not significantly influence the fertility.</p>
+<p>The main difference between the results reported by the two frameworks is that the health index is signed as a significant variable in the second one. Since all of its transformed terms has a negative coefficient, a higher health index leads to lower fertility. The frequently mentioned reason for this is the changing lifestyle and women in the EU are having their first child later. One possible explanation why health index was not relevant in the previous framework is that the share of observations from Central-European countries are much higher in this model (due to the lack of unemployment statistics from the early 2000s). Extension of average childbearing age led to failing fertility rates in this area<a href="#fn15" class="footnote-ref" id="fnref15"><sup>15</sup></a>. But many articles suggest that an adjusted TFR should be considered<a href="#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a>, because the drastically low fertility during the time of this mechanism. However, these indices are currently not available for regional datasets, but this could be a possible further research direction.</p>
+
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="14">
+<li id="fn14"><p>The heterogenity of the contries containing complete observation is higher in this setup, that is comparing the <span class="math inline">\(R^2\)</span> of the two frameworks is not suggested.<a href="Chapter-5.html#fnref14" class="footnote-back">↩︎</a></p></li>
+<li id="fn15"><p>Berde, É. and Németh, P. (2014). Az alacsony magyarországi termékenység új megközelítésben. Statisztikai Szemle, 92(3):253–274.<a href="Chapter-5.html#fnref15" class="footnote-back">↩︎</a></p></li>
+<li id="fn16"><p>Berde, É. and Németh, P. (2014). Az alacsony magyarországi termékenység új megközelítésben. Statisztikai Szemle, 92(3):253–274.<a href="Chapter-5.html#fnref16" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="Chapter-4.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="Chapter-6.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/MarcellGranat/ferilityEU/blob/main/Chapter-5.Rmd",
+"text": "Jump to GitHub"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

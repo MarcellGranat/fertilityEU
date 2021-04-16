@@ -1,0 +1,125 @@
+# Explore the data {#Chapter-4}
+
+```{css, echo=FALSE}
+p {
+  text-align: justify;
+}
+```
+
+
+This section contains an exploratory analysis of the calculated indices and used variables to describe the easily identifiable patterns before the model building. For this purpose, I report distributions, pairwise comparisons and regression trees about the variables.
+
+## Pairwise comparison
+
+Figure 5 shows the relationship between human development indices and total fertility rates. All the pairwise linear correlation coefficients are positive and significant, so it is reasonable to assume that spurious correlations exist in this framework. (An index can explain a significant proportion of the variance of TFR, but the indices also explain each other. As a consequence, the correct mechanism has to be identified with a multivariate model).
+
+```{r fig.cap = "Pairwise correlation among TFR and calculated human development indices", fig.height=6}
+
+# Explore the data ----------------------------------------------------------------------
+
+# Pairwise correlations =================================================================
+
+dat %>% 
+  filter(str_length(geo) == 4) %>% 
+  select(TOTFERRT, GDPindex, edu_index, health_index) %>% 
+  {set_names(., f.clean_names(names(.)))} %>% 
+  rename_all(.funs = function(x) str_remove_all(x, ' index')) %>% 
+  GGally::ggpairs()
+
+```
+
+Similarly, correlations among youth unemployment statistics and fertility are shown in figure 6. Unemployment rates show a negative correlation with TFR, but the pattern here is noisy as well. In contrast, the unemployment statistics seem to move strongly together, foreshadowing the existence of high multicollinearity in our regression.
+
+```{r fig.height=6, fig.cap = "Pairwise correlation among TFR and youth unemployment rates"}
+dat %>% 
+  filter(str_length(geo) == 4) %>% 
+  select(TOTFERRT, uY15, uY20, uY25) %>% 
+  set_names("TFR", "Unemployment rate\n(15-19 years old)",
+            "Unemployment rate\n(20-24 years old)",
+            "Unemployment rate\n(25-29 years old)") %>% 
+  GGally::ggpairs()
+
+```
+
+Unlike the previous relations, the share of family support in gross national income shows a clear pattern with the fertility rate. This is visualized in figure 7. The value of the linear correlation coefficient between the two indicators is 0.51, and one percentage point increase in the support goes with a 0.138 children/woman increase in the TFR. T-statistic is 16.0 in this bivariate regression, which indicates high statistical significance.  Since values of family benefit have a wide range in the sample (from 0 to 4.5), the mentioned slope of the regression line shows significance from the economic aspect as well.
+
+```{r fig.cap = "Correlation between TFR and family benefits", fig.height=6}
+dat %>% 
+  filter(str_length(geo) == 2) %>% 
+{ggplot(., aes(FAM, TOTFERRT)) + 
+  geom_vline(aes(xintercept = mean(.$FAM, na.rm = T), linetype = "means")) +
+  geom_hline(yintercept = mean(.$TOTFERRT, na.rm = T), linetype = 2) +
+  geom_point() +
+  geom_smooth(method = "lm", aes(color = "Linear trend"), size = 1.5) +
+  ggrepel::geom_text_repel(mapping = aes(FAM, TOTFERRT, label = paste(country, time)), max.overlaps = 5) +
+  scale_color_viridis_d() +
+  scale_linetype_manual(values = c("means" = 2)) +
+  labs(y = "Total fertility rate (birth per woman)", 
+       x = "Family benefit (% of GPD)",
+       linetype = NULL, color = NULL
+  ) 
+}
+
+```
+
+```{r eval = F}
+dat %>% 
+  filter(str_length(geo) == 2) %>% 
+  select(FAM, TOTFERRT) %>% 
+  na.omit() %>% 
+  {print(cor.test(.$FAM, .$TOTFERRT)); broom::tidy(lm(TOTFERRT ~ FAM, data = .))}
+
+```
+
+## Regression tree
+
+A regression tree is a useful statistical tool, where the process behind the regression is the sorting of the observations into as homogenous groups as possible concerning the response variable (total fertility rates in our case)^[James, G., Witten, D., Hastie, T., and Tibshirani, R. (2013). An introduction to statistical learning, volume 112. Springer.]. This model does not have any longitudinal characteristics, and is by far not sufficient to answer the research question^[Hence I do not focus on tuning the hyperparameter of the models. I set the complexity parameter to return a well-visualisable number of nodes.], but it can visualize and describe much descriptive statistical information with simple interpretations. To find the optimal cut-points, I use the CART algorithm.
+
+The first step is to determine the set of predictors. At this point, it is important to note again that unemployment rates are available only for a critical short period in most cases. That being the case, I decide to apply two different frameworks: one without unemployment, and one including it. The model contains each of the observations regardless of the time dimension. The result of the first frame is shown in figure 8.
+
+
+```{r fig.cap = "Regression tree explaining the TFR excluding youth unemployment rates (cp = 0.02)"}
+# Regression trees ======================================================================
+
+m_part <- dat %>% 
+  filter(str_length(geo) == 4) %>% 
+  select(TOTFERRT, GDPindex, edu_index, health_index, FAM) %>% 
+  {set_names(., f.clean_names(names(.)))} %>%
+  na.omit() %>% 
+  rpart::rpart(formula = TFR ~ ., cp = .02)
+
+rattle::fancyRpartPlot(m_part, palettes = 'PuRd', sub = NULL)
+
+```
+
+```{r eval=F}
+summary(m_part)
+
+```
+
+Including every datapoint leads to 3773 observations (see the top of the tree). Based on the regression tree, the first logical statement made to generate homogenous groups is that if the share of family benefit is below 1.85. This sorts the observations into two subgroups. The TFR in the group where the statement holds (the family benefit is higher) is higher by 0.2 children/woman on average. The second statement is whether the education index is higher than 0.51 (this generates again two similar-sized subgroups), and fertility is higher in the higher educated subgroup. The third pivotal question is also about family benefit. In the subgroup where the family support as a percentage of GDP is higher than 3.4 percentage, the average TFR is 1.8, and 1.5 in the subgroup where this statement does not hold. At this node, the model separates a group of homogeneous datapoints: where the health index is above 0.9, the TFR is extremely high. These few observations come from France. 
+
+These lead to the following interpretation: (1) Even if TFR is lower in low educated regions, there are observations with high family benefit rate and high fertility among these regions. (2) Childbearing willingness tends to increase related to a higher share of family support as a percentage of GDP, but under the mentioned circumstances, one can observe extremely high TFR data with modest family benefits.
+Integrating youth unemployment statics into the modeling framework decreases the number of complete observations significantly. The extended regression tree contains only 1039 data points. On the other hand, variable importance indicators assign youth unemployment as an important explanation to the variance of fertility among the regions. 49 percentage of prediction error reduction is related to the family benefit, but 16 percentage to the unemployment among young people aged 15 to 19. 
+
+The effect of youth unemployment is interesting in this regression tree. TFR is higher in the category where the unemployment rate among young people is lower at node 2, but at node 3 the conclusion is the opposite. The cutting-points has two main differences: observations, where the family benefit is below 2.1, belongs to node 2, and that cutting-point is based on the unemployment rate among young people aged 15-19, while node 3 belongs to the data points with family support above 2.1, and the model finds youth unemployment rate among 20-24 years olds more important. Therefore, the difference in the direction of the effect can be explained by the amount of family support or the fact, that the effect-mechanism of unemployment differs in the two age categories. 
+
+Based on the literature and theoretical considerations, the first alternative is more plausible. In countries where the family support is higher, young people are probably less sensitive to their working situation, when they decide about childbearing. A high value of family support-to-GDP ratio can eliminate the aforementioned mechanism, that some young parents postpone their childbearing because they cannot afford it. Based on these findings, I extend the design-matrix with the interactions of youth unemployment rates and family benefits.
+
+```{r fig.cap = "Regression tree explaining the TFR using all the mentioned explanatory variables (cp = 0.01)", fig.height=8}
+
+m_part2 <- dat %>% 
+  filter(str_length(geo) == 4) %>% 
+  select(TOTFERRT, GDPindex, edu_index, health_index, uY15, uY20, uY25, FAM) %>% 
+  {set_names(., f.clean_names(names(.)))} %>%
+  na.omit() %>% 
+  rpart::rpart(formula = TFR ~ ., cp = .01)
+
+rattle::fancyRpartPlot(m_part2, palettes = 'PuRd', sub = NULL)
+
+```
+
+```{r eval = F}
+summary(m_part2)
+
+```

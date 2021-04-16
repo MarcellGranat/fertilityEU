@@ -1,0 +1,55 @@
+# Theoretical consideration {#Chapter-2}
+
+```{css, echo=FALSE}
+p {
+  text-align: justify;
+}
+```
+
+To give a detailed answer to our research question I introduce the discussed indicators and the possible causal mechanisms among them.
+
+Political debates and unprofessional public discourses usually focus on the total number of livebirth per year. If the target is to describe the effect of demographic changes on the economy, this perspective is usually right. However, the situation is different when the focus is on the causal mechanisms that affect the level of childbearing willingness. The reason is that the total number of births relies explicitly on the demographic trends in the past. This leads to the problem that the number of births decreases if the number of women at childbearing age reduces. Measuring the efficiency of family support expenditures and demographic policies requires eliminating these effects. The total fertility rate (TFR) is a suitable indicator to manage this. Total fertility rate (TFR) is “the average number of children born per woman over a lifetime given current age-specific fertility rates and assuming no female mortality during reproductive years. TFRs are computed as the sum of age-specific fertility rates defined over five-year intervals” \cite{oecdfertility}. This calculation method ensures that TFR is insensitive to the existing demographic characteristics (robust to the change in the number of childbearing-aged women).
+
+Total fertility rates have dropped significantly in the last decades. More precisely, in the OECD countries, the average has decreased from 2.8 children to 1.7 in the last 50 years \cite{oecdglance}. Another well-known fact is that fertility is lower in the more developed countries. This correlation is visualized in figure 2.
+
+
+```{r fig.cap = "Negative correlation between gross domestic product and fertility rates based on nation level observations (2017)", fig.height=5}
+# https://data.worldbank.org/indicator/SP.DYN.TFRT.IN
+
+WB_fertility <- read_csv("WB_fertility.csv", skip = 4)
+
+# https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.KD
+
+WB_GDP <- read_csv("WB_GDP.csv", skip = 4)
+
+merge(WB_fertility %>% 
+        select('Country Name', '2017') %>% 
+        rename(tfr = '2017'),
+      WB_GDP %>% 
+        select('Country Name', '2017') %>% 
+        rename(GDP = '2017')) %>% 
+  ggplot(aes(GDP, tfr)) + geom_point() +
+  ggformula::geom_spline() +
+  scale_x_continuous(limits = c(0, 7e+4)) +
+  labs(y = "Total fertility rate (birth per woman)", 
+       x = "GDP per capita, PPP (constant 2017 international USD)",
+       caption = "Own editing based on the Figure 5-2. from Kreiszné Hudák (2019).
+       The trend is drawn via splines.
+       Source of the data: World Bank."
+  )
+
+```
+
+Figure 1 shows a clear pattern between income and fertility, but national incomes correlate with hundreds of indicators which can be the true reason for failing fertility. The presented relationship was an unquestionable rule of demography a few decades ago, but the empirical evidence of the “J-shaped” fertility trend changed this^[The economist (2009). The best of all possible worlds?]. Myrskyl et al. (2009) reported in their study that the relationship between development and fertility is reversing. The authors explain this with the innovation in family behavior and government policies that improve the compatibility between economic success and family life. This argument confirms the relevance of investigating the combined effect of human development and family support expenditures on fertility.
+
+It is important to note that the mentioned study refers to the Human Development Index, which is a composite index of three key dimensions of human development. "Human development encompasses more than just economic development. The concomitant construction of the HDI offered a simple, yet multidimensional approach to comparatively evaluate the human development of various countries.^[Sagar, A. D. and Najam, A. (1998). The human development index: a critical review. Ecological economics, 25(3):249–264.]"
+
+To describe the motivation behind the decomposition of human development I refer to the findings of the closely related literature. A sizeable number of studies focus on the effect of education, health, income and fertility. The range of methodologies is wide: several studies use cross-sectional or longitudinal national-level indicators, while others refer to data from questionnaires (Generations- and Gender Surveys is a frequently used source). This paper belongs to the first group of studies but extends the research with regional level observations.
+
+Harttgen and Vollmer (2014) write that pairwise investigation among the components of human development confirms that development leads to higher fertility in countries where the HDI is higher than 0.86. The authors used country-level data and they highlighted that proving the robustness of their findings with a different sample is needed. The current study performs this.
+
+As mentioned previously, Myrskl et al. (2009) argue that innovations related to feasible work-life balance may be the reason for the increasing fertility in highly developed countries. Taking that into account, I extend the set of explanatory variables with employment statistics. The effect of unemployment on fertility is already investigated and proved using the observations of OECD nations^[Adser, A. (2004). Changing fertility rates in developed countries. the impact of labor market institutions. Journal of Population Economics, 17(1):17–43.].
+
+The perception of rapidly declining fertility in Europe during deteriorated labor market conditions provides further evidence for the relevance of unemployment in the model framework^[Matysiak, A., Sobotka, T., and Vignoli, D. (2020). The great recession and fertility in europe: A sub-national analysis. European Journal of Population, 37(1):29–64.]. Since the former findings state that the working and financial condition affects young people more sensitively^[Frejka, T., Gietel-Basten, S., Abolina, L., Abuladze, L., Aksyonova, S., Akrap, A., Antipova, E., Bobic, M., Čipin, I., Fakeyeva, L., et al. (2016). Fertility and family policies in central and
+eastern europe after 1990. Comparative Population Studies.], I focus on the effect of youth unemployment rates on fertility.
+
