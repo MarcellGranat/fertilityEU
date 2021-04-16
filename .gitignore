@@ -37,3 +37,6 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+MarcellGranat_fertilityEU.pdf
+eurostat_datasets/

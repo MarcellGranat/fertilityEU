@@ -1,5 +1,5 @@
 ---
-title: "The effect of socio-economic indicators on the fertilty rates"
+title: "The impact of human development on fertility rates"
 subtitle: "An empirical analysis of fertility rates amoung the regions of Europe"
 author: "Marcell Granát"
 date: \today
@@ -10,16 +10,14 @@ output:
     toc_depth: 4
 header-includes:
 - \usepackage{fancyhdr}
-- \usepackage{natbib}
 - \pagestyle{fancy}
 - \fancyhf{}
-- \fancyhead[LE,RO]{Marcell Granát}
 - \fancyhead[RE,LO]{\leftmark}
-- \pagenumbering{gobble}
+- \fancyfoot[C]{\thepage}
 - \usepackage{lscape}
 - \usepackage{pdfpages}
 - \usepackage{titling}
-- \pretitle{\begin{center}\LARGE\includegraphics[width=5cm]{logo.png}\\[\bigskipamount]}
+- \pretitle{\begin{center}\LARGE\includegraphics[width=15cm]{corvinustdk.png}\\[\bigskipamount]}
 - \posttitle{\end{center}}
 editor_options: 
   chunk_output_type: console
@@ -27,21 +25,21 @@ editor_options:
 
 \pagebreak
 
+```{=tex}
 \begin{abstract}
-1. probléma felvetése
-2. kutatási kérdés
-bevett változók miként befolyásolják a TTA-t
+If one attends to the extremely large literature of demographic trends in the developed world, then the uncertainty about the effect of economic and human development factors on the fertility rate cannot be covered for a long time. Several empirical studies argue for the existence of the J-shaped effect of the development, but many papers come up with statements to the opposite. The goal of this paper is to contribute to the literature with an advanced panel econometric model based on regional observations.  Beyond the human development factors (living standard, education and health) I extend my analysis by using youth unemployment and family benefit indicators as dependent variables. Important to note that statistics about unemployment are available only for a critically short period in the case of many regions. To manage this highly unbalanced nature of the dataset – while not rejecting the possibility to control for youth unemployment – I estimate the model with two different modeling frames: one without youth unemployment and another one with it. 
+As a result, the paper confirms the empirical evidence that increasing human development in developed countries has a positive effect on total fertility rates, and income is the most important component. This finding is robust to the mentioned two frameworks. In contrast, the research come up only with week evidence for the significant effect of expenditure on family on total fertility rates on the long run. 
 
-3. módszertan megnevezése
-adattranszformáció (indexek összeállítása, PCA), panel, lasso
-
-4. saját eredmény röviden
-
-2 végső output összefoglalása
 \end{abstract}
+```
 
+\textbf{\textit{Keywords---}} fertility rates, human development
+
+
+```{=tex}
 \listoftables
 \listoffigures
+```
 
 \pagebreak
 
@@ -90,21 +88,38 @@ theme_set(theme_minimal() + theme(
 
 # Introduction
 
-\pagenumbering{arabic}
-\setcounter{page}{1}
+Total fertility rates have decreased significantly over the past few decades, and in most of the developed countries, they are far below the minimum level, which would ensure the reproducibility of the population (2.1 children/woman). The motivation why this demographic pattern frequently becomes the focus of scientific and political discussions is that it has a radical impact on the economy of the future.
 
-1. motiváció
-2. szűk szakirodalom eredményei
-3. hipotézis
-4. hipotézishez kapcsolódó szakirodalom eredményei
-5. tanulmány fő lépései
-6. módszertan mögötti indoklás
-7. főbb eredmények
-8. mit ad hozzá az irodalomhoz
+The one which must be mentioned is that low fertility is one of the key determinants that lead a country to a high old-age dependency ratio. In extreme cases, today's poor childbearing tendency may put huge economic weight on the future working generation. An interesting fact is that this risk is typically faced by developed economies. Moreover, historical data show a clear correlation between the increasing trend of human development and falling childbearing willingness. The first research question I aim to answer in this study is the following: Does human development truly contribute to the fall in fertility rates, and if it does, are the three components (healthy life; access to knowledge; decent standard of living) included with the same weight?
+
+The related literature contains many uncertainties about this question. Not even the existence of the relation, but the correct direction of the effect is also unclear. An important milestone is a piece of empirical evidence that the association between development and fertility might turn from negative to positive above a given threshold of development \cite{myrskyla2009advances}.
+
+Detecting the trend of falling fertility rates is not new. It is well documented that this issue was a key question in politics in many countries after the second world war, and so is nowadays. Governments around the world have already implemented several policies to increase fertility: Abortion ban, campaigns and various financial incentives. But the effectiveness (and their social benefit in many other important aspects) of these are often questioned. Since only the last one is frequently applied (and can be observed accurately) in the developed countries, my second research question is whether spending on family support increases the childbearing willingness significantly.
+
+The contribution of the current paper to the literature is that it applies longitudinal econometrics on NUTS-2 level regional annual observations. Eurostat is the main source of the data. I use fixed effect panel regression to estimate the effect of the mentioned predictors on fertility. Important to note that statistics about unemployment are available only for a critically short period in the case of many regions. To manage this highly unbalanced nature of the dataset – while not rejecting the possibility to control for youth unemployment – I estimate the model with two different modeling frames: one without youth unemployment and another one with it. Figure 1 visualize the main steps of the current paper.
+
+As a result, the paper confirms the *empirical evidence that increasing human development in developed countries has a positive effect on total fertility rates, and income is the most important component*. This finding is robust to the mentioned two frameworks. In contrast, the research come up *only with week evidence for the significant effect of expenditure on family on total fertility rates on the long run*. 
+
+To ensure fully reproducibility I enclose the used codes in the Appendix, but these are also available on the following GitHub repository:  https://github.com/MarcellGranat/fertilityEU.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{road.pdf}
+  \caption{Main steps of the study.}
+  \label{fig1}
+\end{figure}
 
 
+# Theoretical consideration
 
-```{r fig.cap = "Seemingly negative effect of gross domestic product on fertility rates based on nation level observations (2017)"}
+To give a detailed answer to our research question I introduce the discussed indicators and the possible causal mechanisms among them.
+
+Political debates and unprofessional public discourses usually focus on the total number of livebirth per year. If the target is to describe the effect of demographic changes on the economy, this perspective is usually right. However, the situation is different when the focus is on the causal mechanisms that affect the level of childbearing willingness. The reason is that the total number of births relies explicitly on the demographic trends in the past. This leads to the problem that the number of births decreases if the number of women at childbearing age reduces. Measuring the efficiency of family support expenditures and demographic policies requires eliminating these effects. The total fertility rate (TFR) is a suitable indicator to manage this. Total fertility rate (TFR) is “the average number of children born per woman over a lifetime given current age-specific fertility rates and assuming no female mortality during reproductive years. TFRs are computed as the sum of age-specific fertility rates defined over five-year intervals” \cite{oecdfertility}. This calculation method ensures that TFR is insensitive to the existing demographic characteristics (robust to the change in the number of childbearing-aged women).
+
+Total fertility rates have dropped significantly in the last decades. More precisely, in the OECD countries, the average has decreased from 2.8 children to 1.7 in the last 50 years \cite{oecdglance}. Another well-known fact is that fertility is lower in the more developed countries. This correlation is visualized in figure 2.
+
+
+```{r fig.cap = "Negative correlation between gross domestic product and fertility rates based on nation level observations (2017)", fig.height=3.5}
 # https://data.worldbank.org/indicator/SP.DYN.TFRT.IN
 
 WB_fertility <- read_csv("WB_fertility.csv", skip = 4)
@@ -131,58 +146,78 @@ merge(WB_fertility %>%
 
 ```
 
-```{r plot_NUTS2}
-plot_NUTS2 <- function(df, viridis_c = T, ..., all.x = F) {
-  p <- df %>%
-    {merge(eurostat::get_eurostat_geospatial(nuts_level = 2), ., all.x = all.x)} %>% 
-    ggplot(aes(fill = values)) +
-    geom_sf(color = "black") +
-    theme(
-      axis.text = element_blank()   
-    ) +
-    xlim(c(-30, 44)) +
-    ylim(c(35, 70)) +
-    labs(fill = NULL)
-  
-  if (viridis_c) {
-    p <- p + scale_fill_viridis_c(option = "magma", ...,
-                                  guide = guide_colorbar(frame.colour = "black", 
-                                                         ticks.colour = "black"),
-                                  na.value = "white")
-  }
-  p
-}
+Figure 1 shows a clear pattern between income and fertility, but national incomes correlate with hundreds of indicators which can be the true reason for failing fertility. The presented relationship was an unquestionable rule of demography a few decades ago, but the empirical evidence of the “J-shaped” fertility trend changed this \cite{economist2009}. Myrskyl et al. (2009) reported in their study that the relationship between development and fertility is reversing. The authors explain this with the innovation in family behavior and government policies that improve the compatibility between economic success and family life. This argument confirms the relevance of investigating the combined effect of human development and family support expenditures on fertility.
 
-```
+It is important to note that the mentioned study refers to the Human Development Index, which is a composite index of three key dimensions of human development. "Human development encompasses more than just economic development. The concomitant construction of the HDI offered a simple, yet multidimensional approach to comparatively evaluate the human development of various countries." \cite{sagar1998human}
+
+To describe the motivation behind the decomposition of human development I refer to the findings of the closely related literature. A sizeable number of studies focus on the effect of education, health, income and fertility. The range of methodologies is wide: several studies use cross-sectional or longitudinal national-level indicators, while others refer to data from questionnaires (Generations- and Gender Surveys is a frequently used source). This paper belongs to the first group of studies but extends the research with regional level observations.
+
+Harttgen and Vollmer (2014) write that pairwise investigation among the components of human development confirms that development leads to higher fertility in countries where the HDI is higher than 0.86. The authors used country-level data and they highlighted that proving the robustness of their findings with a different sample is needed. The current study performs this.
+
+As mentioned previously, Myrskl et al. (2009) argue that innovations related to feasible work-life balance may be the reason for the increasing fertility in highly developed countries. Taking that into account, I extend the set of explanatory variables with employment statistics. The effect of unemployment on fertility is already investigated and proved using the observations of OECD nations \cite{Adser2004}.
+
+The perception of rapidly declining fertility in Europe during deteriorated labor market conditions provides further evidence for the relevance of unemployment in the model framework \cite{Matysiak2020}. Since the former findings state that the working and financial condition affects young people more sensitively \cite{frejka2016fertility}, I focus on the effect of youth unemployment rates on fertility.
+
 
 # Data
 
-## Total fertility rates
+Eurostat is an abundant and reliable source of NUTS-2 level statistics, so it is a reasonable choice to use^[Technical note: To ensure easy reproducibility data was download with the dedicated Eurostat R package \cite{eurostatR}.]. However, human development is a hardly available indicator. “The Human Development Index (HDI) is a summary measure of achievements in three key dimensions of human development: a long and healthy life, access to knowledge and a decent standard of living.” \cite{UNDP} The disadvantage of the HDI and its components defined by the United Nations Development Programme is that they are reported officially only on the national level. To ensure comparability with studies that used national-level HDI, I aim to obtain or calculate equivalent indicators.
+
+## Human Development
+
+A possible source for this target is the database provided by the Global Data Lab. [Global Data Lab - Innovative Instruments for Turning Data into Knowledge] This website and the data are created by the Institute of Management Research at Radboud University. Their reported values for the national level are almost fully equivalent to the ones published by UNDP. Table 1 figures the similarity between the two datasets. 
+
+The reason why this dataset does not fully meet the requirements to use it in this research is that the territorial units do not completely fit with the ones reported by Eurostat, so merging the two data sources is only possible with a high rate of mismatching observations. Although I do not use these data for model building, the matching observations are useful as benchmark points for calculating the index based on the available data from the Eurostat database. This usability is confirmed by its similarity to the officially reported national-level dataset by UNDP.
 
 ```{r}
-# Data import ---------------------------------------------------------------------------
+# Global Data Lab =======================================================================
 
-# Fertility: source: Eurostat database ==================================================
+### Nation-level data ###################################################################
 
-f_data <- get_eurostat("demo_r_find2", time_format = "num") %>% 
-  select(geo, time, var = indic_de, values) %>% 
-  filter(!str_detect(geo, "TR"))
+GDL_nat <- read_csv("GDL-Sub-national-HDI-data.csv") %>%
+  filter(Level == "National") %>% 
+  select(Country, 6:34) %>% pivot_longer(-1, names_to = "time", values_to = "values") %>% 
+  mutate(time = as.numeric(time)) %>% 
+  na.omit()
+
+### Data from UNDP ######################################################################
+
+# source: http://hdr.undp.org/
+
+HDI_UNDP <- read_csv("Human Development Index (HDI).csv",
+                     skip = 5) %>% 
+  select(!starts_with("X"), - 'HDI Rank') %>% 
+  mutate_at(-1, 
+            function(x) {as.numeric(ifelse(x == "..", NA, x))}) %>% 
+  pivot_longer(-1, names_to = "time", values_to = "values") %>% 
+  mutate(time = as.numeric(time)) %>% 
+  na.omit()
+
+### Comparison ---> Table 1 #############################################################
+
+merge(GDL_nat %>% rename(GDL = values),
+      HDI_UNDP %>% rename(UNDP = values)) %>% 
+  {
+    c(
+      scales::percent(cor(x = .$GDL, y = .$UNDP)^2, accuracy = .01), 
+      scales::percent(cor(x = .$GDL, y = .$UNDP, method = "spearman")^2, accuracy = .01),
+      as.character(format(mean(abs(.$GDL - .$UNDP)), digits = 1)),
+      scales::percent(mean(abs(.$GDL - .$UNDP)/.$UNDP), accuracy = .01)
+    )
+  } %>% 
+  {tibble(
+    Indicator = c("$R^2$", "Spearman $R^2$", 
+                  "Mean absolute deviation", "Mean absolute percentage deviation"),
+    Value = .
+  )} %>% 
+  kable(
+    caption = "Indicators of similiarity between the Human Development Indices 
+    provided by UNDP and GDL"
+  )
 
 ```
 
-```{r fig.cap="Total fertility rates through Europe in 2017"}
-### Map of TFR ##########################################################################
-
-f_data %>% 
-  filter(var == "TOTFERRT" & str_length(geo) == 4 & time == 2017) %>% 
-  plot_NUTS2(limits = c(1, 3)) 
-```
-
-## Human development
-
 ```{r}
-# Data from Global Data Labor ===========================================================
-
 ### Sub-national data ###################################################################
 
 # source of csv files: https://globaldatalab.org/
@@ -222,49 +257,29 @@ GDL_subnat <- GDL_import("GDL-Sub-national-HDI-data.csv") %>% rename(HDI = value
     GDL_import("GDL-Income-index-data.csv") %>% rename(income = values)
   )
 
-### National data #######################################################################
-
-GDL_nat <- read_csv("GDL-Sub-national-HDI-data.csv") %>%
-  filter(Level == "National") %>% 
-  select(Country, 6:34) %>% pivot_longer(-1, names_to = "time", values_to = "values") %>% 
-  mutate(time = as.numeric(time)) %>% 
-  na.omit()
-
-# Data from UNDP ========================================================================
-
-# source: http://hdr.undp.org/
-
-HDI_UNDP <- read_csv("Human Development Index (HDI).csv",
-                     skip = 5) %>% 
-  select(!starts_with("X"), - 'HDI Rank') %>% 
-  mutate_at(-1, 
-            function(x) {as.numeric(ifelse(x == "..", NA, x))}) %>% 
-  pivot_longer(-1, names_to = "time", values_to = "values") %>% 
-  mutate(time = as.numeric(time)) %>% 
-  na.omit()
-
 ```
 
-```{r}
-merge(GDL_nat %>% rename(GDL = values),
-      HDI_UNDP %>% rename(UNDP = values)) %>% 
-  {
-    c(
-      scales::percent(cor(x = .$GDL, y = .$UNDP)^2, accuracy = .01), 
-      scales::percent(cor(x = .$GDL, y = .$UNDP, method = "spearman")^2, accuracy = .01),
-      as.character(format(mean(abs(.$GDL - .$UNDP)), digits = 1)),
-      scales::percent(mean(abs(.$GDL - .$UNDP)/.$UNDP), accuracy = .01)
-    )
-  } %>% 
-  {tibble(
-    Indicator = c("$R^2$", "Spearman $R^2$", 
-                  "Mean absolute deviation", "Mean absolute percentage deviation"),
-    Value = .
-  )} %>% 
-  kable(
-    caption = "Indicators of similiarity between the Human Development Indices 
-    provided by UNDP and GDL"
-  )
+```{r plot_NUTS2}
+plot_NUTS2 <- function(df, viridis_c = T, ..., all.x = F) {
+  p <- df %>%
+    {merge(eurostat::get_eurostat_geospatial(nuts_level = 2), ., all.x = all.x)} %>% 
+    ggplot(aes(fill = values)) +
+    geom_sf(color = "black") +
+    theme(
+      axis.text = element_blank()   
+    ) +
+    xlim(c(-30, 44)) +
+    ylim(c(35, 70)) +
+    labs(fill = NULL)
+  
+  if (viridis_c) {
+    p <- p + scale_fill_viridis_c(option = "magma", ...,
+                                  guide = guide_colorbar(frame.colour = "black", 
+                                                         ticks.colour = "black"),
+                                  na.value = "white")
+  }
+  p
+}
 
 ```
 
@@ -282,11 +297,23 @@ GDL_subnat %>%
                  ordered = T)
   ) %>% 
   plot_NUTS2() + facet_wrap(~ var, ncol = 2) +
-  labs(caption = "Source: https://globaldatalab.org")
+  labs(caption = "Source: https://globaldatalab.org") + 
+  scale_fill_viridis_c(guide = guide_colorsteps(), option = 'magma')
 
 ```
 
 ### A decent standard of living
+
+To determine the standard of living dimension of the development, the gross national income (GNI) per capita would be required in PPP terms (constant 2017 PPP$) according to the technical note of UNDP \cite{UNDP}. To transform it into an index, the income is put into the following equation:
+
+
+\begin{align}
+\text { Income index }=\frac{\ln (\text{GNI})-\ln (100)}{\ln (75,000)-\ln (100)}
+\end{align}
+
+This normalization process keeps the value between 0 (at 100 dollars annual income) and 1 (at 75,000 dollars annual income). 
+Eurostat reports GNI in PPP terms (constant 2020 PPP) in euros for regional observations. To eliminate this difference, I divide the given GNI value by the corresponding annualized value of the EUR/USD exchange rate (similarly downloaded from the Eurostat database). Table 2 figures the similarity to the values reported by Global Data Lab for the matching observations (where the territorial unit corresponds with the one used by Eurostat). In this aspect, I would like to highlight the very high $\text{Spearman R}^2$ between them. It shows that it hardly ever happens that a region has a different rank in the two datasets.
+
 
 ```{r}
 GDP_index <- get_eurostat("nama_10r_2gdp", time_format = "num") %>% 
@@ -306,7 +333,6 @@ GDP_index <- get_eurostat("nama_10r_2gdp", time_format = "num") %>%
   }
 
 ```
-
 
 ```{r}
 merge(GDL_subnat, GDP_index) %>% 
@@ -331,6 +357,16 @@ merge(GDL_subnat, GDP_index) %>%
 
 ```
 
+### Long and healthy life
+
+The health dimension of HDI is determined based on the life expectancy at birth. The logic of the variable transformation is the same as previously written at the income index:
+
+\begin{align}
+\text { Health index }=\frac{\text{ life expectancy at birth }-20}{85-20}
+\end{align}
+
+The natural minimum of life expectancy is at 20 years, while the maximum is estimated at 85 years, and with the given formula, the range of health index is also set between 0 and 1. Since life expectancy is reported for NUTS 2 levels by Eurostat, this transformation can be performed without any additional calculation. 
+
 ```{r}
 health_index <- get_eurostat("demo_r_mlifexp", time_format = "num") %>% 
   filter(age == "Y_LT1" & sex == "T") %>% 
@@ -341,38 +377,22 @@ health_index <- get_eurostat("demo_r_mlifexp", time_format = "num") %>%
 
 ```
 
-### Long and healthy life
-
-```{r}
-merge(GDL_subnat, health_index) %>% 
-  {
-    c(
-      scales::percent(cor(x = .$health, y = .$health_index)^2, accuracy = .01), 
-      scales::percent(cor(x = .$health, y = .$health_index, method = "spearman")^2,
-                      accuracy = .01),
-      as.character(format(mean(abs(.$health - .$health_index)), digits = 1, nsmall = 4)),
-      scales::percent(mean(abs(.$health - .$health_index)/.$health_index), accuracy = .01)
-    )
-  } %>% 
-  {tibble(
-    Indicator = c("$R^2$", "Spearman $R^2$", 
-                  "Mean absolute deviation", "Mean absolute percentage deviation"),
-    Value = .
-  )} %>% 
-  kable(
-    caption = "Indicators of similiarity between the health component of the 
-    Human Development Indices provided by GDL and the estimation based on regional life
-    expectency"
-  )
-
-```
-
 ### Knowledge
+
+Determining the education index is more complex compared to the previous ones. The required expected years of schooling are not available at a regional level. However, Eurostat reports several pieces of information on the topic of education. In this study, I substitute the original formula with an index based on the available variables. For this purpose, I use data about the population by educational attainment level and NUTS 2 regions. The available data are also grouped by age. Considering that the discussed decline in fertility rates is mainly related to women under the age of 30  \cite{oecdglance}, statistics about younger generations seem more relevant. To manage this, I only use the age class 20-24 and 25-34.
+
+The educational dimension is based on the International Standard Classification of Education (ISCED 2011). This means the following categories: Less than primary, primary and lower secondary education belongs to levels 0-2, upper secondary and post-secondary non-tertiary education is labeled with levels 3 and 4 and tertiary education with levels 5-8. 
+
+These two dimensions lead to eight possible variables, and the target is to define one index from their values. To manage this dimensionality reduction, I use principal component analysis (PCA). PCA is a useful tool to identify independent sources of variance, and in many cases, economic interpretation can be found in the loadings \cite{maddala}. For this step, I impute missing values based on auxiliary regressions using mice R package, and I normalize the variables. Figure 4 shows the result.
+
+The next step is to find the relevant principle component or components. In addition to the interpretability, I also focus on how well this principle describes the education index reported by Global Data Lab. Table 3 contains the similarity indicators.
+
 
 ```{r}
 edu_wide <- get_eurostat("edat_lfse_04", time_format = "num") %>% 
   filter(sex == "T" & !str_detect(isced11, "GEN") & 
-           !str_detect(isced11, "VOC") & isced11 != "ED3-8" & !str_detect(geo, "TR")
+           !str_detect(isced11, "VOC") & isced11 != "ED3-8" & age != 'Y25-64'& 
+           age != 'Y30-34' & !str_detect(geo, "TR")
   ) %>% 
   mutate(
     var = str_c(age, ":", isced11)
@@ -392,7 +412,7 @@ edu_wide <- get_eurostat("edat_lfse_04", time_format = "num") %>%
 
 ```
 
-```{r fig.cap='PCAs and the explained variance'}
+```{r fig.cap='PCAs and the explained variance', fig.height=3.5}
 edu_comps <- edu_wide%>% 
   select(-time, -geo) %>% 
   na.omit() %>% 
@@ -420,7 +440,8 @@ edu_comps %>%
       {.$sdev^2/sum(.$sdev^2)} %>% 
       scales::percent(accuracy = .01) %>% 
       {str_c("# ", 1:length(.), " (", ., ")")} %>% 
-      .[name]
+      .[name],
+    rowname = str_replace_all(rowname, '_', '-')
   ) %>% 
   ggplot +
   aes(rowname, value, fill = value < 0) +
@@ -432,15 +453,16 @@ edu_comps %>%
   scale_y_continuous(labels = scales::percent) +
   facet_wrap(~name, ncol = 3) +
   labs(x = NULL, y = NULL, caption = 
-         "The corresponding proportion of the explained variance are in the brackets.")
+         "The corresponding proportion of the retained variance are in the brackets.")
 
 ```
 
+The next step is to find the relevant principle component or components. In addition to the interpretability, I also focus on how well this principle describes the education index reported by Global Data Lab. Table 3 contains the similarity indicators.
 
 ```{r}
 edu_comps %>% .$scores %>% 
   cbind(edu_wide) %>% merge(GDL_subnat) %>% 
-  select(3:11, education) %>% 
+  select(starts_with('Comp'), education) %>% 
   {
     x <- .$education
     apply(select(., -education), 2, function(y) {
@@ -453,7 +475,7 @@ edu_comps %>% .$scores %>%
   data.frame() %>% 
   mutate(Indicator = c("$R^2$", "Spearman $R^2$")) %>% 
   rename_all(function(x) str_replace(x, "p.", "p ")) %>% 
-  select(Indicator, 1:9) %>% 
+  select(Indicator, everything()) %>% 
   kable(
     caption = "Indicators of similiarity between the knowledge component of Human
     Development Indices provided by UNDP and the calculated principal components using
@@ -461,6 +483,14 @@ edu_comps %>% .$scores %>%
   )
 
 ```
+
+Since the $R^2$ and Spearman $R^2$ are high between the second principal component and the education index from Global Data Lab, and the component has good interpretability, I use the second principal component in the following. Based on the loading, its value increases if the proportion of lower educated people increases and decrease if the share of highly educated people increases. This tells the opposite of what the education index means. For this purpose, I determine the education index as the normalized value of the given PCA score multiplied by minus one.
+
+\begin{align}
+\text{Education index} = \frac{ -\text{PCA score} + |\text{min}\left(-\text{PCA score}\right)|}{\text{max}\left(-\text{PCA score} \right )}
+\end{align}
+
+
 
 ```{r}
 edu_index <- edu_comps %>% 
@@ -477,30 +507,27 @@ edu_index <- edu_comps %>%
 
 ```
 
+## Total fertility rates, family benefit and unemployment statistics
+
+Family benefit data can be found in the Eurostat database. It is reported on the national level, and in this paper, I choose its unit as a percentage of gross national income. The national-level family support corresponds to all regions of a country. The highly unbalanced distribution of family support within countries can lead to incorrect results. However, better statistics are not available at present. In this paper, I systematically refer to this indicator (expenditure on family/children benefits as a percentage of gross national income) as a family benefit or family support.
+
+Youth unemployment rate and fertility statistics are reported for NUTS-2 levels by Eurostat. To perform this empirical analysis, the transformation of these variables is not required.
+
+
 ```{r}
-dat <- f_data %>% 
-  pivot_wider(names_from = var, values_from = values) %>% 
-  merge(edu_index, all = T) %>% 
-  merge(health_index, all = T) %>% 
-  merge(GDP_index, all = T) %>% 
+# Variables without transformation ======================================================
+
+f_data <- get_eurostat("demo_r_find2", time_format = "num") %>% # TFR
+  select(geo, time, var = indic_de, values) %>% 
   filter(!str_detect(geo, "TR"))
 
-```
-
-## Family benefits
-
-```{r}
-FAM_df <- get_eurostat("spr_exp_sum", time_format = "num") %>% 
+FAM_df <- get_eurostat("spr_exp_sum", time_format = "num") %>% # Family benefit
   filter(spdeps == "FAM" & unit == "PC_GDP") %>% 
   rename(FAM = values, country = geo) %>% 
   select(-(spdeps:unit)) 
 
-```
-
-## Youth unemployment
-
-```{r}
 yth_empl_byage <- get_eurostat("yth_empl_110", time_format = "num") %>% 
+  # youth unemployment
   filter(unit == "PC" & sex == "F") %>%
   filter(age %in% c("Y15-19", "Y20-24", "Y25-29")) %>% 
   select(-unit, -sex) %>% 
@@ -511,10 +538,14 @@ yth_empl_byage <- get_eurostat("yth_empl_110", time_format = "num") %>%
     "uY25"  = "Y25-29"
   )
 
-```
+# Merging the data.frames ===============================================================
 
-```{r}
-dat <- dat %>% 
+dat <- f_data %>% 
+  pivot_wider(names_from = var, values_from = values) %>% 
+  merge(edu_index, all = T) %>% 
+  merge(health_index, all = T) %>% 
+  merge(GDP_index, all = T) %>% 
+  filter(!str_detect(geo, "TR"))%>% 
   mutate(country = str_sub(geo, end = 2)) %>% 
   merge(FAM_df, all.x = T, all.y = F) %>% 
   merge(yth_empl_byage, all.x = T, all.y = F) %>% 
@@ -531,16 +562,28 @@ f.clean_names <- function(v, Tosparse = F) {
     str_replace_all("GDPindex", "Income index") %>% 
     str_replace_all("FAM", "Family benefit") %>% 
     str_replace_all("uY15", "UR (15-19 y)") %>% 
-    str_replace_all("uY20", "UR (20-24 y)") %>% 
-    str_replace_all("uY25", "UR (25-29 y)")
-  if(Tosparse) v <- str_replace_all(v, " ", "~")
+    str_replace_all("uY20", "UR (20-24 y)") %>%
+    str_replace_all("uY25", "UR (25-29 y)") %>% 
+    str_replace_all("Fu15", "UR (15-19 y)*Family benefit") %>% 
+    str_replace_all("Fu20", "UR (20-24 y)*Family benefit") %>%
+    str_replace_all("Fu25", "UR (25-29 y)*Family benefit")
+
+  if(Tosparse) v <- str_replace_all(v, " ", "~") %>% 
+      str_replace_all('\\*', '%\\*%')
   v
 }
+
 ```
 
-# Explore data
+# Explore the data
 
-```{r fig.cap = "Pairwise correlation among TFR and calculation human development indices"}
+This section contains an exploratory analysis of the calculated indices and used variables to describe the easily identifiable patterns before the model building. For this purpose, I report distributions, pairwise comparisons and regression trees about the variables.
+
+## Pairwise comparison
+
+Figure 5 shows the relationship between human development indices and total fertility rates. All the pairwise linear correlation coefficients are positive and significant, so it is reasonable to assume that spurious correlations exist in this framework. (An index can explain a significant proportion of the variance of TFR, but the indices also explain each other. As a consequence, the correct mechanism has to be identified with a multivariate model).
+
+```{r fig.cap = "Pairwise correlation among TFR and calculated human development indices", fig.height=3.7}
 
 # Explore the data ----------------------------------------------------------------------
 
@@ -550,9 +593,12 @@ dat %>%
   filter(str_length(geo) == 4) %>% 
   select(TOTFERRT, GDPindex, edu_index, health_index) %>% 
   {set_names(., f.clean_names(names(.)))} %>% 
+  rename_all(.funs = function(x) str_remove_all(x, ' index')) %>% 
   GGally::ggpairs()
 
 ```
+
+Similarly, correlations among youth unemployment statistics and fertility are shown in figure 6. Unemployment rates show a negative correlation with TFR, but the pattern here is noisy as well. In contrast, the unemployment statistics seem to move strongly together, foreshadowing the existence of high multicollinearity in our regression.
 
 ```{r fig.height=6, fig.cap = "Pairwise correlation among TFR and youth unemployment rates"}
 dat %>% 
@@ -565,8 +611,9 @@ dat %>%
 
 ```
 
+Unlike the previous relations, the share of family support in gross national income shows a clear pattern with the fertility rate. This is visualized in figure 7. The value of the linear correlation coefficient between the two indicators is 0.51, and one percentage point increase in the support goes with a 0.138 children/woman increase in the TFR. T-statistic is 16.0 in this bivariate regression, which indicates high statistical significance.  Since values of family benefit have a wide range in the sample (from 0 to 4.5), the mentioned slope of the regression line shows significance from the economic aspect as well.
 
-```{r fig.cap = "Correlation between TFR and family benefits"}
+```{r fig.cap = "Correlation between TFR and family benefits", fig.height=3, fig.width=4}
 dat %>% 
   filter(str_length(geo) == 2) %>% 
 {ggplot(., aes(FAM, TOTFERRT)) + 
@@ -581,13 +628,35 @@ dat %>%
        linetype = NULL, color = NULL
   ) +
     theme(
-      legend.position = "bottom"
+      legend.position = c(.2, .8),
+      legend.box.background = element_rect(
+        colour = "black",
+        size = .7,
+        fill = "white"
+      ),
+      legend.spacing.y = unit(0.05, 'cm')
     )
-  }
+}
 
 ```
 
-```{r fig.cap = "Regression tree explaining the TFR using only the calculated HD indices (cp = 0.01)"}
+```{r eval = F}
+dat %>% 
+  filter(str_length(geo) == 2) %>% 
+  select(FAM, TOTFERRT) %>% 
+  na.omit() %>% 
+  {print(cor.test(.$FAM, .$TOTFERRT)); broom::tidy(lm(TOTFERRT ~ FAM, data = .))}
+
+```
+
+## Regression tree
+
+A regression tree is a useful statistical tool, where the process behind the regression is the sorting of the observations into as homogenous groups as possible concerning the response variable (total fertility rates in our case) \cite{james2013}. This model does not have any longitudinal characteristics, and is by far not sufficient to answer the research question^[Hence I do not focus on tuning the hyperparameter of the models. I set the complexity parameter to return a well-visualisable number of nodes.], but it can visualize and describe much descriptive statistical information with simple interpretations. To find the optimal cut-points, I use the CART algorithm.
+
+The first step is to determine the set of predictors. At this point, it is important to note again that unemployment rates are available only for a critical short period in most cases. That being the case, I decide to apply two different frameworks: one without unemployment, and one including it. The model contains each of the observations regardless of the time dimension. The result of the first frame is shown in figure 8.
+
+
+```{r fig.cap = "Regression tree explaining the TFR excluding youth unemployment rates (cp = 0.02)", fig.height=3}
 # Regression trees ======================================================================
 
 m_part <- dat %>% 
@@ -595,19 +664,28 @@ m_part <- dat %>%
   select(TOTFERRT, GDPindex, edu_index, health_index, FAM) %>% 
   {set_names(., f.clean_names(names(.)))} %>%
   na.omit() %>% 
-  rpart::rpart(formula = TFR ~ ., cp = .01)
+  rpart::rpart(formula = TFR ~ ., cp = .02)
 
-m_part %>% rattle::fancyRpartPlot(palettes = 'PuRd', sub = NULL)
+rattle::fancyRpartPlot(m_part, palettes = 'PuRd', sub = NULL)
 
 ```
 
 ```{r eval=F}
-m_part %>% summary()
+summary(m_part)
 
 ```
 
+Including every datapoint leads to 3773 observations (see the top of the tree). Based on the regression tree, the first logical statement made to generate homogenous groups is that if the share of family benefit is below 1.85. This sorts the observations into two subgroups. The TFR in the group where the statement holds (the family benefit is higher) is higher by 0.2 children/woman on average. The second statement is whether the education index is higher than 0.51 (this generates again two similar-sized subgroups), and fertility is higher in the higher educated subgroup. The third pivotal question is also about family benefit. In the subgroup where the family support as a percentage of GDP is higher than 3.4 percentage, the average TFR is 1.8, and 1.5 in the subgroup where this statement does not hold. At this node, the model separates a group of homogeneous datapoints: where the health index is above 0.9, the TFR is extremely high. These few observations come from France. 
 
-```{r fig.cap = "Regression tree explaining the TFR using all the mentioned explanatory variables (cp = 0.01)"}
+These lead to the following interpretation: (1) Even if TFR is lower in low educated regions, there are observations with high family benefit rate and high fertility among these regions. (2) Childbearing willingness tends to increase related to a higher share of family support as a percentage of GDP, but under the mentioned circumstances, one can observe extremely high TFR data with modest family benefits.
+Integrating youth unemployment statics into the modeling framework decreases the number of complete observations significantly. The extended regression tree contains only 1039 data points. On the other hand, variable importance indicators assign youth unemployment as an important explanation to the variance of fertility among the regions. 49 percentage of prediction error reduction is related to the family benefit, but 16 percentage to the unemployment among young people aged 15 to 19. 
+
+The effect of youth unemployment is interesting in this regression tree. TFR is higher in the category where the unemployment rate among young people is lower at node 2, but at node 3 the conclusion is the opposite. The cutting-points has two main differences: observations, where the family benefit is below 2.1, belongs to node 2, and that cutting-point is based on the unemployment rate among young people aged 15-19, while node 3 belongs to the data points with family support above 2.1, and the model finds youth unemployment rate among 20-24 years olds more important. Therefore, the difference in the direction of the effect can be explained by the amount of family support or the fact, that the effect-mechanism of unemployment differs in the two age categories. 
+
+Based on the literature and theoretical considerations, the first alternative is more plausible. In countries where the family support is higher, young people are probably less sensitive to their working situation, when they decide about childbearing. A high value of family support-to-GDP ratio can eliminate the aforementioned mechanism, that some young parents postpone their childbearing because they cannot afford it. Based on these findings, I extend the design-matrix with the interactions of youth unemployment rates and family benefits.
+
+```{r fig.cap = "Regression tree explaining the TFR using all the mentioned explanatory variables (cp = 0.01)", fig.height=8}
+
 m_part2 <- dat %>% 
   filter(str_length(geo) == 4) %>% 
   select(TOTFERRT, GDPindex, edu_index, health_index, uY15, uY20, uY25, FAM) %>% 
@@ -615,11 +693,25 @@ m_part2 <- dat %>%
   na.omit() %>% 
   rpart::rpart(formula = TFR ~ ., cp = .01)
 
-m_part2 %>% rattle::fancyRpartPlot(palettes = 'PuRd', sub = NULL)
+rattle::fancyRpartPlot(m_part2, palettes = 'PuRd', sub = NULL)
+
+```
+
+```{r eval = F}
+summary(m_part2)
 
 ```
 
 # Model building
+
+Following the findings in the previous chapters, I highlight the main ideas for the model building: 
+(1) Youth unemployment is a significant factor in explaining the variance of fertility, but including it in the model reduces the number of complete observations, so I report one model with the youth unemployment included and one without that. (2) Extending the design matrix with the interactions of youth unemployment rates and fertility is justified. (This extension only concerns the framework which contains unemployment). 
+
+Additionally, concerning the nature of fertility (duration of pregnancy) and childbearing decisions (parents may interpolate their expected socio-economic situation from their past) extending the model with the lagged value of the predictors is also reasonable. This raises the issue that the model contains too many predictors and variable selection becomes difficult. I manage variable selection based on lasso selection.
+
+The first step to estimate panel regression models is to identify the appropriate model type. Choosing among the pooled, within and random-effects model requires performing the Chow test and Hausman test. The null hypothesis in the former one is that whether a significant difference among the individual intercepts exists, and the test is performed based on an F-test. If the given $\text{H}_{0}$ cannot be rejected at any standard significance level, estimating a pooled model is suggested. In other cases, the outcome depends on the result of the Hausman test. The Hausman test (or Durbin-Wu-Hausman test) is more complex from mathematical aspects, but the interpretation is simple: if the given $\text{H}_{0}$ cannot be rejected, the within (fixed-effects) model is not as efficient as the random-effects, and estimating random-effects model is suggested. If the null hypothesis is rejected at any standard significance level, the fixed-effects model will be suitable \cite{wooldridge}.
+
+The optimal model may differ if the set of predictors change, but as a starting point, I estimate the one-one simplest model for the two mentioned model frameworks (including unemployment statistics or not). These models do not contain interaction but lagged effect and quadratic terms are included. The performed tests show that the fixed-effects model is optimal (see the results in Table 5), and the estimated coefficients from the fixed-effects models are presented in figure 10. 
 
 ```{r}
 # Model building ------------------------------------------------------------------------
@@ -630,6 +722,11 @@ dat_plm <- dat %>%
   select(
     geo, time, TOTFERRT, edu_index, health_index, GDPindex, FAM, uY15, uY20, uY25
   ) %>% 
+  mutate( # TODO new element
+    Fu15 = FAM*uY15,
+    Fu20 = FAM*uY20,
+    Fu25 = FAM*uY25
+  ) %>% # TODO end of new
   filter(str_length(geo) == 4 & !is.na(TOTFERRT))
 
 dat_plm <- dat_plm %>% 
@@ -658,7 +755,9 @@ dat_plm <- dat_plm %>%
     set_names(., ifelse(names(.) == 'geo' | names(.) == 'time', names(.), 
                         paste0(names(.), '_2')))
   } %>% 
-  merge(dat_plm, all.x = F, all.y = T)
+  merge(dat_plm, all.x = F, all.y = T) %>% 
+  select(-c("Fu15_l_l_2", "Fu20_l_l_2", "Fu25_l_l_2", "Fu15_l_2", "Fu20_l_2",
+            "Fu25_l_2", "Fu15_2", "Fu20_2", "Fu25_2"))
 
 ```
 
@@ -732,7 +831,8 @@ m_panels %>%
   geom_point() +
   geom_pointrange(aes(xmin = conf.low, xmax = conf.high)) +
   facet_wrap(~rowname, nrow = 1) +
-  labs(x = "Estimated coefficient", y = "Term", color = "Corresponding p-value \u2264 5%") +
+  labs(x = "Estimated coefficient", y = "Term",
+       color = "Corresponding p-value \u2264 5%") +
   scale_color_viridis_d(option = "magma", begin = .2, end = .7) +
   scale_y_discrete(labels=scales::parse_format()) +
   theme(
@@ -742,13 +842,12 @@ m_panels %>%
 
 ```
 
-
 ```{r}
 ### Model descriptions ##################################################################
 
 m_panels %>% 
   lapply(function(output) {
-    c(output$tests, nrow(augment(output$OLS)))
+    c(output$tests, nrow(augment(output$model)))
   }) %>% 
   reduce(rbind) %>% 
   t() %>% 
@@ -764,7 +863,45 @@ m_panels %>%
 
 ```
 
+In the following, I perform lasso variable selection on these model frameworks to find the most relevant effects.
+
 ## Framework I: with unemployment
+
+As repeatedly mentioned in the previous section, including unemployment statistics in the regression analysis drastically reduces the number of complete observations. Moreover, there is a good reason to believe that this selection method is not random, and omitting the incomplete data points may cause bias in the results. Figure 10 shows the number of complete observations by territorial units related to the two frameworks. 
+
+```{r fig.cap = "Number of complete observations by countries when the model includes or excludes unemployment statistics", fig.height=3.6}
+theme_update(legend.direction = 'horizontal', legend.position = 'bottom')
+
+ggpubr::ggarrange(
+  dat_plm %>% 
+    na.omit() %>% 
+    group_by(geo) %>% 
+    summarise(
+      values = n()
+    ) %>% 
+    plot_NUTS2(all.x = T) +
+    scale_fill_viridis_b(option = "magma", direction = -1, begin = .2,
+                         na.value = "white") +
+    ggtitle('Including'),
+  dat_plm %>% 
+    select(!starts_with('u') & !starts_with('Fu')) %>% 
+    na.omit() %>% 
+    group_by(geo) %>% 
+    summarise(
+      values = n()
+    ) %>% 
+    plot_NUTS2(all.x = T) +
+    scale_fill_viridis_b(option = "magma", direction = -1, begin = .2,
+                         na.value = "white") +
+    ggtitle('Excluding'),
+  common.legend = T
+) 
+```
+
+Figure 10 reveals that there are unbalances among the regions concerning their representation in the dataset. A prominent amount of incomplete and thus unusable observations concerns the Central European region and the UK. In this paper, I do not impute these missing values, and therefore, the limited generalizability of the results is taken into account.
+
+To measure the bias, I calculate the mean of the given variables in the total sample (including incomplete observations), and the sample that is used in this framework (excluding incomplete observations). The result is reported in table 5. The table describes that the health index and income index are higher, while the family benefit is lower in the used sample compared to the dataset containing the incomplete observations as well.
+
 
 ```{r}
 # Framework I. ==========================================================================
@@ -773,40 +910,35 @@ m_panels %>%
 
 names(dat_plm) %>% 
   { ifelse(
-    . %in% c("geo", "time") | str_detect(., "_l") | str_detect(., "_2"), NA, .
+    . %in% c("geo", "time") | str_detect(., "_l") | str_detect(., "_2") |
+      str_detect(., 'Fu')
+    , NA, .
   )} %>% 
   na.omit() %>% 
   lapply(function(variable){
     x <- pull(dat_plm, variable) %>% na.omit()
     y <- pull(na.omit(dat_plm), variable)
-    t <- t.test(x, y)
     tibble(
       Variable = f.clean_names(variable),
       'Mean in total sample' = mean(x),
       'Mean in used sample' = mean(y),
-      'Number of observations in the total sample' = length(x),
-      'T-statistic' = t$statistic,
-      'P-value' = scales::percent(t$p.value, accuracy = .01)
+      'Number of observations in the total sample' = length(x)
     )
   }
   ) %>% reduce(rbind) %>% 
-  knitr::kable(caption = 'T-tests', digits = 4, 
-               align = c('l', 'c', 'c', 'c', 'c', 'c', 'c'))
+  knitr::kable(caption = 
+                 'Comparison of average values of the variables for incomplete 
+               and complete observations (Framework I)', digits = 4, 
+               align = c('l', 'c', 'c', 'c', 'c'))
 
 ```
 
-```{r fig.cap = "Number of used observations by countries when the model contains youth unemployment"}
-dat_plm %>% 
-  na.omit() %>% 
-  group_by(geo) %>% 
-  summarise(
-    values = n()
-  ) %>% 
-  plot_NUTS2(all.x = T) +
-  scale_fill_viridis_b(option = "magma", direction = -1, begin = .2,
-                                  na.value = "white")
+### Methodology of model estimating
 
-```
+As described above, an optimal statistical tool for a high-dimensional dataset is the lasso regression. From mathematical aspect lasso regression means to add a $\lambda\sum_{j = 1}^{p}|\beta_{j}|$ term to the target function of regression \cite{james2013}. Intuitively, with this additional term, the value of the target function is lower (which has to be minimized), if more parameters are equal to zero, but the prediction error does not decrease significantly.
+
+Lasso regression has a hyperparameter $\lambda$. Setting its value to zero leads to the unmodified OLS model. In contrast, a lasso regression with $\lambda = 1$ would lead to an empty model. Finding the optimal $\lambda$ hyperparameter requires estimating the model with different parameters. In each case, the model contains a different number of variables.  To determine the optimal value of $\lambda$, leave-one-out cross-validation is performed with 10 folds, then the model having the lowest mean squared error on the validation set is chosen. This process is visualized in figure 11.
+
 
 ```{r}
 ### Run lasso regression ################################################################
@@ -819,7 +951,7 @@ LASSO <- cv.glmnet(X, y)
 
 ```
 
-```{r}
+```{r fig.cap = 'Performance of lasso regression models with different parameters', fig.height=3}
 tidy(LASSO) %>%
   ggplot() + 
   aes(log(lambda), ymin = conf.low*1000, ymax = conf.high*1000) +
@@ -828,20 +960,29 @@ tidy(LASSO) %>%
             size = 1) +
   geom_ribbon(alpha = .4) + 
   geom_hline(yintercept = 0, size = 1) +
-  geom_vline(aes(xintercept = log(LASSO$lambda.1se), color = "lambda.1se"), 
-             # TODO name the line
-             linetype = 2) +
-  geom_vline(aes(xintercept = log(LASSO$lambda.min), color = "lambda.min"), 
-             linetype = 2) +
+  geom_vline(aes(xintercept = log(LASSO$lambda.1se), linetype = "Best performing model"), 
+             color = 'black') +
   scale_y_continuous(
-    name = "Number of used explanatory variables",
+    name = "Number of used explanatory \n variables",
     sec.axis = sec_axis( trans=~./1000, name = "Mean-Squared Error")
   ) +
-  labs(y = "Mean-Squared Error", x = "Log(\u03BB)", color = NULL) +
-  scale_color_viridis_d(option = "magma", end = .8) +
+  labs(y = "Mean-Squared Error", x = "Log(\u03BB)", color = NULL, linetype = NULL) +
+  scale_linetype_manual(values = c(2)) +
   theme(legend.position = "bottom", legend.direction = "horizontal")
 
 ```
+
+It is important to note that the above-described algorithm eliminated the insignificant individual intercept terms from the model. To adjust this property, I reestimate the within model including all the individual intercept terms and predictor variables from the best-performing lasso regression model.
+
+In addition, the difference in the measurement of the variables causes complexity in interpretation. Interpreting the direct effect of a predictor is simple, but the coefficients are not sufficient to describe the importance of the variables, because they are measured on different scales (one percentage point change in the family benefit-to-GDP ratio would be extreme, but not as outstanding as one percentage point change in the youth unemployment rate). To manage this, I reestimate the model with standardized variables. The benefit of this model is that the explained variance of the regression model can be decomposed with it:
+
+
+\begin{align}
+\text{R}^2 = \sum_{j=1}^{p} r_j \times \beta_{standardized,j}
+\end{align}
+
+Based on equation 4, the coefficient multiplied by the linear correlation coefficient ($r$) can be interpreted as the contribution to the explained variance. The result of this and the above-mentioned computations are reported in figure 12.
+
 
 ```{r}
 lasso_coefs <- capture.output(
@@ -920,8 +1061,7 @@ standard_beta <- augment(m_panels2[[1]]$OLS) %>%
 
 ```
 
-
-```{r fig.height=6, fig.cap="Estimated coefficient of the fixed panel model controlling for youth unemployment indicators"}
+```{r fig.height=8, fig.cap="Estimated coefficient of the fixed panel model controlling for youth unemployment indicators"}
 lasso_coefs %>% 
   rename(lasso = coef) %>% 
   merge(tidy(m_panels2[[1]]$OLS, conf.int = T)) %>% 
@@ -942,14 +1082,14 @@ lasso_coefs %>%
     name = case_when(
       name == "cor" ~ 'Correlation coefficient',
       name == "estimate" ~ 'Coefficient in OLS',
-      name == "lasso" ~ 'Coefficient in lasso regression',
+      name == "lasso" ~ 'Coefficient in \nlasso regression',
       name == "standard_beta" ~ 'Standardized coefficient',
       name == "explain" ~ 'Contribution to R-squared'
     ),
     name = factor(
       name, levels = c(
         'Correlation coefficient',
-        'Coefficient in lasso regression',
+        'Coefficient in \nlasso regression',
         'Coefficient in OLS',
         'Standardized coefficient',
         'Contribution to R-squared'
@@ -962,7 +1102,7 @@ lasso_coefs %>%
       geom_point(aes(value, term, fill = factor(lag)), size = 3) +
       geom_col(aes(bar, term, fill = factor(lag)), color = "black") +
       scale_fill_viridis_d(option = "magma", begin = .3, end = .7) +
-      scale_y_discrete(labels=scales::parse_format()) +
+      scale_y_discrete(labels=scales::parse_format(), limits = rev) +
       facet_wrap(~ name, scales = "free_x") +
       labs(x = NULL, y = "Term", fill = "Lag") +
       theme(legend.position = "bottom", legend.direction = "horizontal")
@@ -970,18 +1110,25 @@ lasso_coefs %>%
 
 ```
 
+### Interpreting the results
+
+The high contribution of income index and family benefit to the explained variance revealed by figure 12. Both of them seem to have a positive effect on fertility. Increasing income per capita leads to higher total fertility rate based on the model parameters (positive coefficient correspond to each lagged variable). In contrast, coefficients related to the different lagged values of family support indicate a complex mechanism: family support has a high instantaneous effect on fertility, but the lagged negative effect implies that this birth-surplus disappears in the following years.
+
+Based on the results the answer to our research question is that in the developed world (1) *income is far the most important component of human development influencing fertility (highest contribution to* $\text{R}^2$) and (2) *family support also has a significant instantaneous effect on childbearing willingness, but it seems weaker on the long run*. 
+
+Youth unemployment rates among 25-29 year-olds have a negative effect on fertility, but its total effect is lagged. Among 15-19 year-olds this effect is different. In their case, the increase in unemployment causes an instantaneous increase in fertility. But in the case of a permanent increase in unemployment, this increase disappears (ceteris paribus). Extending the model with the interactions of youth unemployment and family benefit was truly beneficial comparing the standardized effect of the unemployment rates and the interactions. 
+
+Education index is also detected as a significant explanation of the variance of fertility, but its interpretation is more complex. The lagged quadratic terms are represented in the model with negative coefficients. This reflects that the higher education index leads to lower fertility, and this effect is stronger in the case of those regions, where the education index is higher. This confirms the former findings in the literature that highly educated women tend to have less children \cite{martin1995women}, but recent research found empirical evidence, that "higher educated German women, who already decided to have a child despite their high opportunity costs are more family oriented" \cite{konig2011higher}.
 
 ## Framework II: without unemployment
 
+I continue my study reporting the results from the model excludes unemployment statistics. This framework omits significantly fewer data points, so the probability of contra selection-caused bias is reduced. Table 6 describes the average difference comparing the used sample and the values from the incomplete observations.
+
+The methodology of the model estimation is equivalent to the one described in the first model framework. The results are presented in figure 15. The $\text{H}_0$ of the Chow test ($p = 0.00%$) and the Hausman test ($p = 0.00%$) are rejected, so fixed effect model is adequate. The $\text{R}^2$ of this model is 14.85%^[The heterogenity of the contries containing complete observation is higher in this setup, that is comparing the $R^2$ of the two frameworks is not suggested.].
+
 ```{r}
 dat_plm <- dat_plm %>% 
-  select(!starts_with("uY"))
-
-```
-
-```{r}
-LASSO <- cv.glmnet(model.matrix(TOTFERRT ~ ., data = select(na.omit(dat_plm), -time)), 
-                   na.omit(dat_plm)$TOTFERRT)
+  select(!starts_with("uY") &! starts_with("Fu"))
 
 ```
 
@@ -994,32 +1141,22 @@ names(dat_plm) %>%
   lapply(function(variable){
     x <- pull(dat_plm, variable) %>% na.omit()
     y <- pull(na.omit(dat_plm), variable)
-    t <- t.test(x, y)
     tibble(
       Variable = f.clean_names(variable),
       'Mean in total sample' = mean(x),
       'Mean in used sample' = mean(y),
-      'Number of observations in total sample' = length(x),
-      'T-statistic' = t$statistic,
-      'P-value' = scales::percent(t$p.value, accuracy = .01)
+      'Number of observations in total sample' = length(x)
     )
   }
   ) %>% reduce(rbind) %>% 
-  knitr::kable(caption = 'T-tests', digits = 4, 
-               align = c('l', 'c', 'c', 'c', 'c', 'c', 'c'))
+  knitr::kable(caption = 'Comparison of average values of the variables for incomplete and complete observations (Framework II)', digits = 4, 
+               align = c('l', 'c', 'c', 'c'))
 
 ```
 
-```{r fig.cap = "Number of used observations by countries when the model does not contain youth unemployment"}
-dat_plm %>% 
-  na.omit() %>% 
-  group_by(geo) %>% 
-  summarise(
-    values = n()
-  ) %>% 
-  plot_NUTS2(all.x = T) +
-  scale_fill_viridis_b(option = "magma", direction = -1, begin = .2,
-                                  na.value = "white")
+```{r}
+LASSO <- cv.glmnet(model.matrix(TOTFERRT ~ ., data = select(na.omit(dat_plm), -time)), 
+                   na.omit(dat_plm)$TOTFERRT)
 
 ```
 
@@ -1135,13 +1272,14 @@ lasso_coefs %>%
       )
     )
   ) %>% 
+  filter(name != 'Correlation coefficient') %>% 
   {  
     ggplot(.) +
       geom_vline(xintercept = 0) +
       geom_point(aes(value, term, fill = factor(lag)), size = 3) +
       geom_col(aes(bar, term, fill = factor(lag)), color = "black") +
       scale_fill_viridis_d(option = "magma", begin = .3, end = .7) +
-      scale_y_discrete(labels=scales::parse_format()) +
+      scale_y_discrete(labels=scales::parse_format(), limits = rev) +
       facet_wrap(~ name, scales = "free_x") +
       labs(x = NULL, y = "Term", fill = "Lag") +
       theme(legend.position = "bottom", legend.direction = "horizontal")
@@ -1149,10 +1287,27 @@ lasso_coefs %>%
 
 ```
 
+### Interpreting the results
 
+Figure 13 shows that the outstandingly high contribution to the $\text{R}^2$ of the income index did not change, so the answer for my first research question is robust to the framework: *income index explains significantly more of the variance of the fertility than the other components of human development, and it has a positive effect on childbearing willingness*. 
 
+The estimated effect of family benefit differs in this framework compared to the one including unemployment statistics (and excluding observations where youth unemployment is not available). The new observations come from Central-European regions and the estimated structure of the effect of family benefit became significantly different. The reversal effect in this framework is close to the instantaneous effect of the family spending. This leads to the interpretation that family support has only an instantaneous impact on fertility, but on the long run it can not significantly influence the fertility.
+
+The main difference between the results reported by the two frameworks is that the health index is signed as a significant variable in the second one. Since all of its transformed terms has a negative coefficient, a higher health index leads to lower fertility. The frequently mentioned reason for this is the changing lifestyle and women in the EU are having their first child later. One possible explanation why health index was not relevant in the previous framework is that the share of observations from Central-European countries are much higher in this model (due to the lack of unemployment statistics from the early 2000s). Extension of average childbearing age led to failing fertility rates in this area \cite{berde2014az}. But many articles suggest that an adjusted TFR should be considered \cite{bongaarts1998quantum}, because the drastically low fertility during the time of this mechanism. However, these indices are currently not available for regional datasets, but this could be a possible further research direction.
+
+# Conclusion
+
+This paper focused on the effect of two key factors on fertility rates in Europe: human development and expenditures on family support. To quantify the relationships, econometric modeling on regional dataset were performed. This requires to generate or estimate the human development indices for regional level. From statistical aspect the key issue is the trade of between limited complete observations or omitting possibly important explanatory variables. This is due to the lack of data about youth unemployment. To manage this a I set up two model frameworks: one including unemployment statistics and one excluding it. Based on theoretical considerations and the previously performed analysis the design-matrix was extended with lagged variables (duration of pregnancy), quadratic terms (Theory of "J-shaped" effect) and interactions between youth unemployment and family benefit (based on the previously performed regression tree). This lead to a high-diemansonal dataset, so lasso-based feature selection was the bases of the reported longitudinal econometric models.
+
+As a result, the paper confirms the *empirical evidence that increasing human development in developed countries has a positive effect on total fertility rates, and income is the most important component*. This finding is robust to the framework. In contrast, the research come up *only with week evidence for the significant effect of expenditure on family on total fertility rates*. 
 
 \pagebreak
+\nocite{*}
+\bibliography{fertilityEU}
+\bibliographystyle{Apalike}
+\pagebreak
+
+
 
 # Appendix: R codes
 
