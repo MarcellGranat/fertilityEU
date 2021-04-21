@@ -1,4 +1,4 @@
-# An Analysis of Customer Reviews of the Airbnb online platform <img src="logo.png" align="right" width="140" height="140" />
+# The impact of human development on fertility rates <img src="logo.png" align="right" width="140" height="140" />
 
 This repo contains R codes and additinal files to my current study. *I would like to thank my supervisor*  ***Zoltán Madari*** *for his consistent support and guidance during the running of this project.*
 
